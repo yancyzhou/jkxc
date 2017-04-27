@@ -27,7 +27,7 @@ class AuthHandler(BaseHandler):
 
     @run_on_executor
     def _get_db_user_resource(self):
-        resource = self.DbRead.query(self.User).filter(self.User.staff_code == self.username).first()
+        resource = self.DbRead.query(self.Staff).filter(self.Staff.staff_code == self.username).first()
         if resource:
             pass
         else:
