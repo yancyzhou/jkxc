@@ -4,3 +4,7 @@ Handler.pyc
 config.pyc
 dbclient/__init__.pyc
 utils.pyc
+admin/__init__.py
+app/__init__.py
+model/__init__.py
+

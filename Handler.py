@@ -41,52 +41,17 @@ class BaseHandler(RequestHandler):
             self.writejson(json_decode(str(ApiHTTPError(10500))))
 
     @property
-    def User(self):
-        return models.User
+    def Staff(self):
+        return models.Staff
 
-    @property
-    def dbs(self):
-        return self.application.dbs
-
-    @property
-    def mdb_cur(self):
-        return self.application.cur
-
-    #Write instance
-    @property
-    def DbInsert(self):
-        return self.application.DbInsert
-
-    #Read-only instance
     @property
     def DbRead(self):
         return self.application.DbRead
 
     @property
-    def DrdsRead(self):
-        return self.application.DrdsRead
+    def Student(self):
+        return models.Student
 
-    @property
-    def DrdsUserLogRead(self):
-        return self.application.DrdsUserLogRead
-
-    @property
-    def mdb_conn(self):
-        return self.application.conn
-
-    #省份组织代码对应名称的字典
-    @property
-    def provinces(self):
-        return provincescode_name
-
-    #城市组织代码对应名称的字典
-    @property
-    def citylist(self):
-        return city_list
-
-    @property
-    def city(self):
-        return city
 
     def get_json_arguments(self, args, **kwargs):
         result = json_decode(self.request.body)
