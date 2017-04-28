@@ -27,7 +27,7 @@ class AuthHandler(BaseHandler):
 
     @run_on_executor
     def _get_db_user_resource(self):
-        resource = self.DbRead.query(self.User).filter(self.User.staff_code == self.username).first()
+        resource = self.DbRead.query(self.Staff).filter(self.Staff.staff_code == self.username).first()
         if resource:
             pass
         else:
@@ -37,6 +37,7 @@ class AuthHandler(BaseHandler):
         self.name = resource.staff_name
         self.id = str(resource.staff_id)
         MD5_key = hashlib.md5()
+
         MD5_key.update(self.passwd)
         inputpasswrod = MD5_key.hexdigest()
         if inputpasswrod.upper() == resource.RU_User_md5Key:
