@@ -4,7 +4,7 @@ from Errorconfig import Errortypes,city_list,provincescode_name,provinceslist,ci
 from tornado import gen
 from tornado.escape import json_decode, json_encode, to_unicode
 from model import models
-
+import hashlib, random, socket
 
 
 class ApiHTTPError(Exception):
@@ -52,6 +52,20 @@ class BaseHandler(RequestHandler):
     def Student(self):
         return models.Student
 
+
+    @property
+    def GetHostIpAddr(self):
+        name = socket.getfqdn(socket.gethostname())
+        addr = socket.gethostbyname(name)
+        return addr
+
+
+    @property
+    def GetRandomStr(self):
+        m2 = hashlib.md5()
+        m2.update(str(random.randint(10000, 99999999999999999)))
+        result = m2.hexdigest()
+        return result.upper()
 
     def get_json_arguments(self, args, **kwargs):
         result = json_decode(self.request.body)
