@@ -48,8 +48,8 @@ class GetUserinfo(BaseHandler):
     executor = ThreadPoolExecutor(8)
 
     @gen.coroutine
-    def get(self, *args, **kwargs):
-        self.code = self.get_json_argument("code",None)
+    def get(self,code):
+        self.code = code
         self.appId = 'wxad81631247e48b3e'
         client = httpclient.AsyncHTTPClient()
         url = "https://api.weixin.qq.com/sns/jscode2session"
