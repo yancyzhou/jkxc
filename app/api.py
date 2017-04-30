@@ -48,8 +48,8 @@ class GetUserinfo(BaseHandler):
     executor = ThreadPoolExecutor(8)
 
     @gen.coroutine
-    def get(self,code):
-        self.code = code
+    def post(self):
+        self.code = self.get_json_argument("code",None)
         self.appId = 'wxad81631247e48b3e'
         client = httpclient.AsyncHTTPClient()
         url = "https://api.weixin.qq.com/sns/jscode2session"
@@ -60,7 +60,7 @@ class GetUserinfo(BaseHandler):
             "grant_type":"authorization_code"
         }
         response = yield client.fetch(url, method="POST", body=json.dumps(data))
-        self.on_response(response)
+        print response
         result = yield self.getdata()
         rep = {}
         rep['data'] = result
