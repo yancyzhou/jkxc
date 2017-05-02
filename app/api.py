@@ -66,8 +66,6 @@ class WXBizDataCrypt:
     def _unpad(self, s):
         return s[:-ord(s[len(s) - 1:])]
 
-class GetUserinfo(BaseHandler):
-
 class PackageDetail(BaseHandler):
     executor = ThreadPoolExecutor(8)
 
