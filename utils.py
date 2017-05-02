@@ -9,6 +9,7 @@ Handlers = [
     (r'/api/packagedetail', PackageDetail),
     (r'/api/package', PackageIndex),
     (r'/api/GetUserinfo', GetUserinfo),
+    (r'/api/SmsSender', SmsSenders),
     # (r'/api/IndexHandler', IndexHandler),
     # (r'/api/GetProvince', GetProvince),
     # (r'/api/PaperAnalytics', PaperAnalytics),

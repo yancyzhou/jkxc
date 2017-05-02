@@ -90,7 +90,7 @@ class PackageDetail(BaseHandler):
         return rep
 
 class GetUserinfo(BaseHandler):
-    execute = ThreadPoolExecutor(8)
+    executor = ThreadPoolExecutor(8)
 
     @gen.coroutine
     def post(self, *args, **kwargs):
