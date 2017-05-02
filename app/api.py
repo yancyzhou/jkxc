@@ -50,18 +50,16 @@ class GetUserinfo(BaseHandler):
     @gen.coroutine
     def post(self):
         self.code = self.get_json_argument("code",None)
+        print self.code
         self.appId = 'wxad81631247e48b3e'
         client = httpclient.AsyncHTTPClient()
-        url = "https://api.weixin.qq.com/sns/jscode2session"
-        data = {
-            "appid":self.appId,
-            "secret":"fd82d4c64dbfead96192e31df1146741",
-            "js_code":self.code,
-            "grant_type":"authorization_code"
-        }
-        response = yield client.fetch(url, method="POST", body=json.dumps(data))
-        print response
-        result = yield self.getdata()
+        url = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code" %(self.appId,'fd82d4c64dbfead96192e31df1146741',self.code)
+        response = yield client.fetch(url)
+
+        # result = yield self.getdata()
+
+        result = json_decode(response.body)
+        result.pop("session_key")
         rep = {}
         rep['data'] = result
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
