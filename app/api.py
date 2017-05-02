@@ -50,7 +50,6 @@ class GetUserinfo(BaseHandler):
     @gen.coroutine
     def post(self):
         self.code = self.get_json_argument("code",None)
-        print self.code
         self.appId = 'wxad81631247e48b3e'
         client = httpclient.AsyncHTTPClient()
         url = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code" %(self.appId,'fd82d4c64dbfead96192e31df1146741',self.code)
@@ -75,26 +74,5 @@ class GetUserinfo(BaseHandler):
 
         rep = pc.decryptData(encryptedData, iv)
         return rep
-@jwtauth
-class GetKpi(BaseHandler):
-
-    executor = ThreadPoolExecutor(8)
-
-    @gen.coroutine
-    def get(self):
-        result = yield self.getdata()
-        rep = {}
-        rep['data'] = result
-        self.writejson(json_decode(str(ApiHTTPError(**rep))))
-
-    @run_on_executor
-    def getdata(self):
-
-        result = self.DrdsRead.query(self.olap_userlogkpi).all()
-        self.DrdsRead.close()
-        res = []
-        for item in result:
-            res.append({"value":json_decode(item.kpi_value),"label":item.kpi_title,"id":item.kpi_id})
-        return res
 
 
