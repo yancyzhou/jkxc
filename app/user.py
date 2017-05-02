@@ -37,7 +37,6 @@ class AuthHandler(BaseHandler):
         self.name = resource.staff_name
         self.id = str(resource.staff_id)
         MD5_key = hashlib.md5()
-
         MD5_key.update(self.passwd)
         inputpasswrod = MD5_key.hexdigest()
         if inputpasswrod.upper() == resource.RU_User_md5Key:
