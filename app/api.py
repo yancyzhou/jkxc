@@ -16,6 +16,9 @@ from tornado.concurrent import run_on_executor
 from model.models import *
 import requests
 import json
+import base64
+import json
+from Crypto.Cipher import AES
 
 
 class PackageIndex(BaseHandler):
@@ -39,10 +42,6 @@ class PackageIndex(BaseHandler):
         for res in result:
             rep[res[0]] = {"package_name":res[1], "package_money":res[2]}
         return rep
-
-import base64
-import json
-from Crypto.Cipher import AES
 
 
 class WXBizDataCrypt:
@@ -69,7 +68,10 @@ class WXBizDataCrypt:
     def _unpad(self, s):
         return s[:-ord(s[len(s) - 1:])]
 
+
 class GetUserinfo(BaseHandler):
+    pass
+
 
 class PackageDetail(BaseHandler):
     executor = ThreadPoolExecutor(8)
