@@ -6,6 +6,8 @@ Handlers = [
     # (r"/download/(.*)", Download),
     # (r"/api/SetFile", SetFile),
     (r'/api/auth', AuthHandler),
+    (r'/api/openid', OpenID),
+    (r'/api/package', PackageIndex),
     # (r'/api/IndexHandler', IndexHandler),
     # (r'/api/GetProvince', GetProvince),
     # (r'/api/PaperAnalytics', PaperAnalytics),
