@@ -8,6 +8,7 @@ Handlers = [
     (r'/api/auth', AuthHandler),
     (r'/api/openid', OpenID),
     (r'/api/package', PackageIndex),
+    (r'/api/GetUserinfo', GetUserinfo),
     # (r'/api/IndexHandler', IndexHandler),
     # (r'/api/GetProvince', GetProvince),
     # (r'/api/PaperAnalytics', PaperAnalytics),
