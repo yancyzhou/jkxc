@@ -31,7 +31,6 @@ class BaseHandler(RequestHandler):
         self.write(obj), {'Content-Type': 'application/json;'}
         self.finish()
 
-
     def write_error(self, status_code, **kwargs):
         if status_code == 404:
             self.writejson(json_decode(str(ApiHTTPError(10405))))
@@ -52,6 +51,33 @@ class BaseHandler(RequestHandler):
     def Student(self):
         return models.Student
 
+    @property
+    def Trainer(self):
+        return models.Trainer
+
+    @property
+    def School(self):
+        return models.School
+
+    @property
+    def Courses(self):
+        return models.Courses
+
+    @property
+    def Exam_place(self):
+        return models.Exam_place
+
+    @property
+    def Order(self):
+        return models.Order
+
+    @property
+    def Package(self):
+        return models.Package
+
+    @property
+    def Student_courses(self):
+        return models.Student_courses
 
     def get_json_arguments(self, args, **kwargs):
         result = json_decode(self.request.body)
@@ -86,11 +112,8 @@ class BaseHandler(RequestHandler):
             self.writejson(result)
 
 
-
 class NotFound(BaseHandler):
-
     def get(self):
         self.writejson(json_decode(str(ApiHTTPError(10404))))
-
     def post(self):
         self.writejson(json_decode(str(ApiHTTPError(10404))))
