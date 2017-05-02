@@ -10,10 +10,54 @@ from datetime import datetime,timedelta
 from Handler import BaseHandler,ApiHTTPError
 from auth import jwtauth
 from tornado.escape import json_decode,json_encode
-from sqlalchemy import func,extract,distinct
+from sqlalchemy import func, extract, distinct
 from concurrent.futures import ThreadPoolExecutor
 from tornado.concurrent import run_on_executor
 from model.models import *
+import requests
+import json
+
+
+@jwtauth
+class OpenID(BaseHandler):
+    executor = ThreadPoolExecutor(8)
+
+    @gen.coroutine
+    def getopenid(self):
+        self.appid = self.get_json_argument('appid', None)
+        self.secret = self.get_json_argument('secret', None)
+        self.js_code = self.get_json_argument('js_code', None)
+        self.grant_type = self.get_json_argument('grant_type', None)
+        url = 'https://api.weixin.qq.com/sns/'
+        data = json.dumps({'appid': self.appid, 'secret':self.secret, 'js_code':self.js_code, 'grant_type':self.grant_type})
+        rejson = requests.post(url, data)
+        if rejson["openid"] is not ' ':
+            return rejson["openid"]
+        else:
+            return 'kkkk'
+
+class PackageIndex(BaseHandler):
+    executor = ThreadPoolExecutor(8)
+
+    @gen.coroutine
+    def post(self):
+        self.schoolid = self.get_json_argument('schoolid', None)
+        reps = yield self.getdata()
+        rep = {}
+        rep['data'] = reps
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+    @run_on_executor
+    def getdata(self):
+        result = self.DbRead.query(
+            self.Package.package_id, self.Package.package_name, self.Package.package_money).filter(
+            self.Package.package_state == 1,
+            self.Package.package_schooluid == self.schoolid,).all()
+        rep = {}
+        for res in result:
+            rep[res[0]] = {"package_name":res[1], "package_money":res[2]}
+        return rep
+
 
 @jwtauth
 class IndexHandler(BaseHandler):
@@ -22,7 +66,7 @@ class IndexHandler(BaseHandler):
     @gen.coroutine
     def post(self):
         self.daterange = self.get_json_argument('StartDate',[])
-        self.province = self.get_json_argument('province',None)
+        self.province = self.get_json_argument('province', None)
         if len(self.daterange)==0:
             self.startdate = (datetime.now()-timedelta(days=30)).strftime("%Y-%m-%d")
             self.enddate = datetime.now().strftime("%Y-%m-%d")
@@ -34,8 +78,7 @@ class IndexHandler(BaseHandler):
         province = []
         total = []
         if len(rep['data']) > 0:
-            rep['data'] = sorted(rep['data'],key=lambda x:x['total'])
-
+            rep['data'] = sorted(rep['data'], key=lambda x:x['total'])
             for item in rep['data']:
                 if self.substrlength == 2:
                     try:
