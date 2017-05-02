@@ -1,3 +1,3 @@
-from index import *
-from admini import *
-from menu import *
+from admin.index import *
+from admin.admini import *
+from admin.menu import *

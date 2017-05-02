@@ -5,7 +5,7 @@
 ======================
 '''
 from __future__ import division
-from tornado import gen,escape,httpclient
+from tornado import gen,escape
 from datetime import datetime,timedelta
 from Handler import BaseHandler,ApiHTTPError
 from auth import jwtauth
@@ -17,24 +17,6 @@ from model.models import *
 import requests
 import json
 
-
-@jwtauth
-class OpenID(BaseHandler):
-    executor = ThreadPoolExecutor(8)
-
-    @gen.coroutine
-    def getopenid(self):
-        self.appid = self.get_json_argument('appid', None)
-        self.secret = self.get_json_argument('secret', None)
-        self.js_code = self.get_json_argument('js_code', None)
-        self.grant_type = self.get_json_argument('grant_type', None)
-        url = 'https://api.weixin.qq.com/sns/'
-        data = json.dumps({'appid': self.appid, 'secret':self.secret, 'js_code':self.js_code, 'grant_type':self.grant_type})
-        rejson = requests.post(url, data)
-        if rejson["openid"] is not ' ':
-            return rejson["openid"]
-        else:
-            return 'kkkk'
 
 class PackageIndex(BaseHandler):
     executor = ThreadPoolExecutor(8)
@@ -89,10 +71,27 @@ class WXBizDataCrypt:
 
 class GetUserinfo(BaseHandler):
 
+class PackageDetail(BaseHandler):
     executor = ThreadPoolExecutor(8)
 
     @gen.coroutine
     def post(self):
+        self.schoolid = self.get_json_argument('schoolid', None)
+        self.packageid = self.get_json_argument('packageid', None)
+        reps = yield self.getdata()
+        rep = {}
+        rep['data'] = reps
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+    @run_on_executor
+    def getdata(self):
+        result = self.DbRead.query(
+            self.Package.package_describe).filter(
+            self.Package.package_state == 1,
+            self.Package.package_schooluid == self.schoolid,
+            self.Package.package_id == self.packageid).all()
+        rep = {self.packageid: result[0]}
+        return rep
         self.daterange = self.get_json_argument('StartDate',[])
         self.province = self.get_json_argument('province', None)
         if len(self.daterange)==0:
