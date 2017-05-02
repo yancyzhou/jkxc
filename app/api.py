@@ -5,7 +5,7 @@
 ======================
 '''
 from __future__ import division
-from tornado import gen,escape
+from tornado import gen,escape,httpclient
 from datetime import datetime,timedelta
 from Handler import BaseHandler,ApiHTTPError
 from auth import jwtauth
@@ -14,9 +14,8 @@ from sqlalchemy import func, extract, distinct
 from concurrent.futures import ThreadPoolExecutor
 from tornado.concurrent import run_on_executor
 from model.models import *
-import requests
-import json
-
+import requests,base64,json
+from Crypto.Cipher import AES
 
 class PackageIndex(BaseHandler):
     executor = ThreadPoolExecutor(8)
@@ -40,9 +39,7 @@ class PackageIndex(BaseHandler):
             rep[res[0]] = {"package_name":res[1], "package_money":res[2]}
         return rep
 
-import base64
-import json
-from Crypto.Cipher import AES
+
 
 
 class WXBizDataCrypt:
@@ -69,7 +66,6 @@ class WXBizDataCrypt:
     def _unpad(self, s):
         return s[:-ord(s[len(s) - 1:])]
 
-class GetUserinfo(BaseHandler):
 
 class PackageDetail(BaseHandler):
     executor = ThreadPoolExecutor(8)
@@ -92,50 +88,12 @@ class PackageDetail(BaseHandler):
             self.Package.package_id == self.packageid).all()
         rep = {self.packageid: result[0]}
         return rep
-        self.daterange = self.get_json_argument('StartDate',[])
-        self.province = self.get_json_argument('province', None)
-        if len(self.daterange)==0:
-            self.startdate = (datetime.now()-timedelta(days=30)).strftime("%Y-%m-%d")
-            self.enddate = datetime.now().strftime("%Y-%m-%d")
-        else:
-            self.startdate = self.daterange[0][:10]
-            self.enddate = self.daterange[1][:10]
-        self.substrlength = 4 if self.province and self.province!='all' else 2
-        rep = yield self.getdata()
-        province = []
-        total = []
-        if len(rep['data']) > 0:
-            rep['data'] = sorted(rep['data'], key=lambda x:x['total'])
-            for item in rep['data']:
-                if self.substrlength == 2:
-                    try:
-                        province_tmp = self.provinces[item['provinces']]
-                    except KeyError as e:
-                        province_tmp = "未知"
-                else:
-                    if item['provinces'][:2] in self.city:
-                        province_tmp = self.city[item['provinces'][:2]]
-                    else:
-                        if item['provinces'] not in self.citylist.keys():
-                            province_tmp = "联考"
-                        else:
-                            try:
-                                province_tmp = self.citylist[item['provinces']]
-                            except KeyError as e:
-                                province_tmp = "未知"
-                province.append(province_tmp)
-                total.append(item['total'])
-            rep['data'] = {}
-            rep['data']['provinces'] = province
-            rep['data']['total'] = sum(total)
-            rep['data']['count'] = total
-            self.writejson(json_decode(str(ApiHTTPError(**rep))))
-        else:
-            rep['data'] = {}
-            rep['data']['provinces'] = province
-            rep['data']['total'] = sum(total)
-            rep['data']['count'] = total
-            self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+class GetUserinfo(BaseHandler):
+    execute = ThreadPoolExecutor(8)
+
+    @gen.coroutine
+    def post(self, *args, **kwargs):
         self.code = self.get_json_argument("code",None)
         self.appId = 'wxad81631247e48b3e'
         client = httpclient.AsyncHTTPClient()
