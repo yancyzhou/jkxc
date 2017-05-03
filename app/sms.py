@@ -42,6 +42,7 @@ class SmsSenders(BaseHandler):
         params = [code, exp_time]
         result = single_sender.send_with_param("86", self.phoneNumber, templ_id, params, "", "", "")
         rsp = json.loads(result)
+        print rsp
         self.writejson(json_decode(str(ApiHTTPError(**rsp))))
 
     def generate_verification_code(self,len=6):
