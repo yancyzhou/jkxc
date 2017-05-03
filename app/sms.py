@@ -76,7 +76,7 @@ class ValidationCode(BaseHandler):
         self.code = self.get_json_argument("code",None)
         self.phoneNum = self.get_json_argument("phoneNum",None)
         expired_time = 3
-        result = self.validationcode(expired_time)
+        result = yield self.validationcode(expired_time)
         print result
         rep = {}
         rep['data'] = result
