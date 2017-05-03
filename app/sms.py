@@ -19,7 +19,7 @@ from Handler import BaseHandler,ApiHTTPError
 from tornado.escape import json_decode,json_encode
 from concurrent.futures import ThreadPoolExecutor
 from tornado.concurrent import run_on_executor
-import json,random
+import json,random,time
 from datetime import datetime
 import lib.Qcloud.Sms.sms as SmsSender
 
@@ -42,11 +42,11 @@ class SmsSenders(BaseHandler):
         single_sender = SmsSender.SmsSingleSender(appid, appkey)
         params = [code, exp_time]
         smlog_message = "您的验证码是%s，请于%s分钟内填写。如非本人操作，请忽略本短信。" % (code,exp_time)
-        ext = datetime.now().strftime("%Y-%m-%d %H:%I:%s")
+        ext = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         result = single_sender.send_with_param("86", self.phoneNumber, templ_id, params, "", "", ext)
         rsp = json.loads(result)
         print rsp
-        smlog = self.SmLog(smlog_usercode=self.phoneNumber,smlog_message=smlog_message,smlog_createtime=rsp['ext'])
+        smlog = self.SmLog(smlog_usercode=self.phoneNumber,smlog_message=smlog_message,smlog_createtime=time.strptime(rsp['ext'], "%Y-%m-%d %H:%M:%S"))
         self.DbRead.add(smlog)
         self.DbRead.commit()
         rep_id = smlog.smlog_id
