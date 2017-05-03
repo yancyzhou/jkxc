@@ -15,14 +15,10 @@
 """
 from __future__ import division
 from tornado import gen,escape,httpclient
-from datetime import datetime,timedelta
 from Handler import BaseHandler,ApiHTTPError
-from auth import jwtauth
 from tornado.escape import json_decode,json_encode
-from sqlalchemy import func, extract, distinct
 from concurrent.futures import ThreadPoolExecutor
 from tornado.concurrent import run_on_executor
-from model.models import *
 import json,random
 import lib.Qcloud.Sms.sms as SmsSender
 
@@ -40,9 +36,10 @@ class SmsSenders(BaseHandler):
         appid = self.sdkappid
         appkey = self.appkey
         templ_id = 18108
-        code = self.generate_verification_code()
+        code = self.generate_verification_code() #验证码
+        exp_time = "3" #失效时间，单位为分钟
         single_sender = SmsSender.SmsSingleSender(appid, appkey)
-        params = [code, "3"]
+        params = [code, exp_time]
         result = single_sender.send_with_param("86", self.phoneNumber, templ_id, params, "", "", "")
         rsp = json.loads(result)
         self.writejson(json_decode(str(ApiHTTPError(**rsp))))
