@@ -24,7 +24,7 @@ def cli(**kwargs):
         del model_dict['_sa_instance_state']
         return model_dict
 
-    Base.column_dict = column_dict
+    Base.column_dict = column_dict #add data for select to dict
 
 
 # def init_db():

@@ -89,8 +89,7 @@ class ValidationCode(BaseHandler):
             .filter(self.SmLog.smlog_usercode==self.phoneNum,func.substr(self.SmLog.smlog_message,18,6)==self.code)\
             .order_by(self.SmLog.smlog_createtime.desc()).first()
         count = 0
-        print result
-        for item in result:
-            count=1
+        if result:
+            count = 1
         return count
 
