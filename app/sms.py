@@ -45,16 +45,15 @@ class SmsSenders(BaseHandler):
         ext = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         result = single_sender.send_with_param("86", self.phoneNumber, templ_id, params, "", "", ext)
         rsp = json.loads(result)
-        print time.strptime(rsp['ext'], "%Y-%m-%d %H:%M:%S")
-        smlog = self.SmLog(smlog_usercode=self.phoneNumber,smlog_message=smlog_message,smlog_createtime=rsp['ext'])
-        print smlog
-        self.DbRead.add(smlog)
-        self.DbRead.commit()
-        rep_id = smlog.smlog_id
-        print rep_id
-        self.DbRead.close()
+        if rsp['result']!=0:
+            pass
+        else:
+            smlog = self.SmLog(smlog_usercode=self.phoneNumber,smlog_message=smlog_message,smlog_createtime=rsp['ext'])
+            self.DbRead.add(smlog)
+            self.DbRead.commit()
+            self.DbRead.close()
         result ={}
-        result['data'] = {"id":rep_id,"data":rsp}
+        result['data'] = {"data":rsp}
         self.writejson(json_decode(str(ApiHTTPError(**result))))
 
     def generate_verification_code(self,len=6):
