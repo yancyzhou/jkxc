@@ -90,9 +90,10 @@ class ValidationCode(BaseHandler):
             .order_by(self.SmLog.smlog_createtime.desc()).first()
         count = 0
         if result:
-            t1 = datetime.strptime(result[0].smlog_createtime, '%Y-%m-%d %H:%M:%S')
-            t2 = datetime.now()
-            if (t2-t1).seconds<=180:
-                count = 1
+            for item in result:
+                t1 = datetime.strptime(item.smlog_createtime, '%Y-%m-%d %H:%M:%S')
+                t2 = datetime.now()
+                if (t2-t1).seconds<=180:
+                    count = 1
         return count
 
