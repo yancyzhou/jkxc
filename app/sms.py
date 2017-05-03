@@ -39,7 +39,7 @@ class SmsSenders(BaseHandler):
         self.phoneNumber = self.get_json_argument("phoneNumber",None)
         appid = self.sdkappid
         appkey = self.appkey
-        templ_id = 18075
+        templ_id = 18108
 
         single_sender = SmsSender.SmsSingleSender(appid, appkey)
         params = ["5678", "10"]
