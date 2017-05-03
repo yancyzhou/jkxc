@@ -147,13 +147,13 @@ class SmLog(Base):
     smlog_usercode = Column(VARCHAR(13))
     smlog_message = Column(VARCHAR(255))
     smlog_createtime = Column(DATETIME)
-    school_usertype = Column(VARCHAR(9))
+    smlog_usertype = Column(VARCHAR(9))
 
-    def __init__(self, smlog_usercode=None, smlog_message=None, smlog_createtime=datetime.now(), school_usertype=0):
+    def __init__(self, smlog_usercode=None, smlog_message=None, smlog_createtime=datetime.now(), smlog_usertype=0):
         self.smlog_usercode = smlog_usercode
         self.smlog_message = smlog_message
         self.smlog_createtime = smlog_createtime
-        self.school_usertype = school_usertype
+        self.smlog_usertype = smlog_usertype
 
 class Order(Base):
     __tablename__ = 'jkxc_order'

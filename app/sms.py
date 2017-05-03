@@ -48,6 +48,7 @@ class SmsSenders(BaseHandler):
         smlog = self.SmLog(smlog_usercode=self.phoneNumber,smlog_message=smlog_message,smlog_createtime=time.strptime(rsp['ext'], "%Y-%m-%d %H:%M:%S"))
         self.DbRead.add(smlog)
         rep_id = smlog.smlog_id
+        print rep_id
         self.DbRead.close()
         result ={}
         result['data'] = {"id":rep_id,"data":rsp}
