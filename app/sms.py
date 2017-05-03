@@ -20,6 +20,7 @@ from tornado.escape import json_decode,json_encode
 from concurrent.futures import ThreadPoolExecutor
 from tornado.concurrent import run_on_executor
 import json,random
+from datetime import datetime
 import lib.Qcloud.Sms.sms as SmsSender
 
 
@@ -40,7 +41,7 @@ class SmsSenders(BaseHandler):
         exp_time = "3" #失效时间，单位为分钟
         single_sender = SmsSender.SmsSingleSender(appid, appkey)
         params = [code, exp_time]
-        result = single_sender.send_with_param("86", self.phoneNumber, templ_id, params, "", "", "")
+        result = single_sender.send_with_param("86", self.phoneNumber, templ_id, params, "", "", datetime.now())
         rsp = json.loads(result)
         print rsp
         self.writejson(json_decode(str(ApiHTTPError(**rsp))))
