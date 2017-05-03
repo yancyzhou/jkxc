@@ -11,6 +11,8 @@ Handlers = [
     (r'/api/studentcourseslist', StudentExamList),
     (r'/api/studentcoursesindex', StudentExamindex),
     (r'/api/smlog', Smlog),
+    (r'/api/GetUserinfo', GetUserinfo),
+    (r'/api/SmsSender', SmsSenders),
     # (r'/api/IndexHandler', IndexHandler),
     # (r'/api/GetProvince', GetProvince),
     # (r'/api/PaperAnalytics', PaperAnalytics),

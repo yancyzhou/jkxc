@@ -34,7 +34,7 @@ class PackageIndex(BaseHandler):
         result = self.DbRead.query(
             self.Package.package_id, self.Package.package_name, self.Package.package_money).filter(
             self.Package.package_state == 1,
-            self.Package.package_schooluid == self.schoolid).all()
+            self.Package.package_schooluid == self.schoolid,).all()
         rep = {}
         for res in result:
             rep[res[0]] = {"package_name":res[1], "package_money":res[2]}
@@ -108,21 +108,6 @@ class PackageDetail(BaseHandler):
             self.Package.package_id == self.packageid).all()
         rep = {self.packageid: result[0]}
         return rep
-
-
-class Smlog(BaseHandler):
-    executor = ThreadPoolExecutor(8)
-
-    @gen.coroutine
-    def post(self):
-        self.usercode = self.get_json_argument('usercode', None)
-        client = httpclient.AsyncHTTPClient()
-        url = "https://console.qcloud.com/sms/smsinfo/1400029906?jumpto=smsSend" %(self.usercode)
-        response = yield client.fetch(url)
-        # reps = yield self.getdata()
-        rep = {}
-        rep['data'] = response
-        self.writejson(json_decode(str(ApiHTTPError(**rep))))
 
     # @run_on_executor
     # def getdata(self):
