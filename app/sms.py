@@ -43,7 +43,7 @@ class SmsSenders(BaseHandler):
         params = [code, exp_time]
         smlog_message = "您的验证码是%s，请于%s分钟内填写。如非本人操作，请忽略本短信。" % (code,exp_time)
         ext = datetime.now().strftime("%Y-%m-%d %H:%I:%s")
-        result = single_sender.send_with_param("86", self.phoneNumber, templ_id, params, "", "", datetime.now())
+        result = single_sender.send_with_param("86", self.phoneNumber, templ_id, params, "", "", ext)
         rsp = json.loads(result)
         print rsp
         smlog = self.SmLog(smlog_usercode=self.phoneNumber,smlog_message=smlog_message,smlog_createtime=rsp['ext'])
