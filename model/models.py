@@ -1,6 +1,7 @@
 from sqlalchemy import Column
 from sqlalchemy.orm import relationship,backref
 from config import Base
+from datetime import datetime
 from sqlalchemy.dialects.mysql import BIGINT, BINARY, BIT, BLOB, BOOLEAN, CHAR, DATE,DATETIME, DECIMAL, DECIMAL, DOUBLE, ENUM, FLOAT, INTEGER, LONGBLOB, LONGTEXT, MEDIUMBLOB, MEDIUMINT, MEDIUMTEXT, NCHAR, NUMERIC, NVARCHAR, REAL, SET, SMALLINT, TEXT, TIME, TIMESTAMP, TINYBLOB, TINYINT, TINYTEXT, VARBINARY, VARCHAR, YEAR
 
 
@@ -139,6 +140,20 @@ class Exam_place(Base):
         self.ep_phonenumber = ep_phonenumber
         self.ep_schooluid = ep_schooluid
 
+
+class SmLog(Base):
+    __tablename__ = "jkxc_smlog"
+    smlog_id = Column(BIGINT(11),primary_key=True)
+    smlog_usercode = Column(VARCHAR(13))
+    smlog_message = Column(VARCHAR(255))
+    smlog_createtime = Column(DATETIME)
+    school_usertype = Column(VARCHAR(9))
+
+    def __init__(self, smlog_usercode=None, smlog_message=None, smlog_createtime=datetime.now(), school_usertype=0):
+        self.smlog_usercode = smlog_usercode
+        self.smlog_message = smlog_message
+        self.smlog_createtime = smlog_createtime
+        self.school_usertype = school_usertype
 
 class Order(Base):
     __tablename__ = 'jkxc_order'
