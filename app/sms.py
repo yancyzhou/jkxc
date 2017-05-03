@@ -97,7 +97,6 @@ class ValidationCode(BaseHandler):
             for item in result:
                 t1 = item
                 t2 = datetime.now()
-                print (t2-t1).seconds
                 if (t2-t1).seconds<=expired_time*60:
                     count = 1
         return count
