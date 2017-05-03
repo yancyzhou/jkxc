@@ -91,6 +91,8 @@ class ValidationCode(BaseHandler):
         count = 0
         if result:
             for item in result:
+                print item
+                print item.smlog_createtime
                 t1 = datetime.strptime(item.smlog_createtime, '%Y-%m-%d %H:%M:%S')
                 t2 = datetime.now()
                 if (t2-t1).seconds<=180:
