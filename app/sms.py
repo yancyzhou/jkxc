@@ -40,7 +40,7 @@ class SmsSenders(BaseHandler):
         appid = self.sdkappid
         appkey = self.appkey
         templ_id = 18108
-        code = self.generate_verification_code_v2()
+        code = self.generate_verification_code()
         single_sender = SmsSender.SmsSingleSender(appid, appkey)
         params = [code, "3"]
         result = single_sender.send_with_param("86", self.phoneNumber, templ_id, params, "", "", "")
