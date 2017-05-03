@@ -32,7 +32,7 @@ class Application(tornado.web.Application):
         # client = motor.motor_tornado.MotorClient(DB)
         # self.dbs = client[Collections]
         web.Application.__init__(self, handlers)
-        self.DbRead = scoped_session(sessionmaker(bind=EngineRead, autocommit=True,autoflush=True, expire_on_commit=False))
+        self.DbRead = scoped_session(sessionmaker(bind=EngineRead, autocommit=False,autoflush=True, expire_on_commit=True))
 
 if __name__ == "__main__":
     cli()

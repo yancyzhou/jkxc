@@ -64,6 +64,10 @@ class BaseHandler(RequestHandler):
         return models.Courses
 
     @property
+    def SmLog(self):
+        return models.SmLog
+
+    @property
     def Exam_place(self):
         return models.Exam_place
 
