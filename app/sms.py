@@ -19,6 +19,7 @@ from Handler import BaseHandler,ApiHTTPError
 from tornado.escape import json_decode,json_encode
 from concurrent.futures import ThreadPoolExecutor
 from tornado.concurrent import run_on_executor
+from sqlalchemy import func, extract, distinct
 import json,random,time
 from datetime import datetime
 import lib.Qcloud.Sms.sms as SmsSender
@@ -64,3 +65,34 @@ class SmsSenders(BaseHandler):
         myslice = random.sample(code_list, len)  # 从list中随机获取6个元素，作为一个片断返回
         verification_code = ''.join(myslice)  # list to string
         return verification_code
+
+
+class ValidationCode(BaseHandler):
+
+    executor = ThreadPoolExecutor(8)
+
+    @gen.coroutine
+    def post(self, *args, **kwargs):
+        self.code = self.get_json_argument("code",None)
+        self.phoneNum = self.get_json_argument("phoneNum",None)
+        expired_time = 3
+        result = self.validationcode(expired_time)
+        rep = {}
+        rep['data'] = result
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+    @run_on_executor
+    def validationcode(self,expired_time):
+
+        result = self.DbRead.query(self.SmLog.smlog_id)\
+            .filter(self.SmLog.smlog_usercode==self.phoneNum,func.substr(self.SmLog.smlog_message,18,6)==self.code)\
+            .order_by(self.SmLog.smlog_createtime.desc()).first()
+        count = 0
+        for item in result:
+            count+=1
+        if count:
+            result = True
+        else:
+            result = False
+        return result
+
