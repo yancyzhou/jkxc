@@ -46,7 +46,7 @@ class SmsSenders(BaseHandler):
         result = single_sender.send_with_param("86", self.phoneNumber, templ_id, params, "", "", ext)
         rsp = json.loads(result)
         print time.strptime(rsp['ext'], "%Y-%m-%d %H:%M:%S")
-        smlog = self.SmLog(smlog_usercode=self.phoneNumber,smlog_message=smlog_message,smlog_createtime=time.strptime(rsp['ext'], "%Y-%m-%d %H:%M:%S"))
+        smlog = self.SmLog(smlog_usercode=self.phoneNumber,smlog_message=smlog_message,smlog_createtime=rsp['ext'])
         print smlog
         self.DbRead.add(smlog)
         self.DbRead.commit()
