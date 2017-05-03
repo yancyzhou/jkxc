@@ -42,7 +42,7 @@ class SmsSenders(BaseHandler):
         templ_id = 18108
 
         single_sender = SmsSender.SmsSingleSender(appid, appkey)
-        params = ["5678", "10"]
+        params = ["5678", "3"]
         result = single_sender.send_with_param("86", self.phoneNumber, templ_id, params, "", "", "")
         rsp = json.loads(result)
         self.writejson(json_decode(str(ApiHTTPError(**rsp))))
