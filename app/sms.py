@@ -96,7 +96,7 @@ class ValidationCode(BaseHandler):
         if result:
             for item in result:
                 print item
-                t1 = datetime.strptime(item, '%Y-%m-%d %H:%M:%S')
+                t1 = item
                 t2 = datetime.now()
                 if (t2-t1).seconds<=180:
                     count = 1
