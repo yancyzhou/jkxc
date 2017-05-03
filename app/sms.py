@@ -89,10 +89,6 @@ class ValidationCode(BaseHandler):
             .order_by(self.SmLog.smlog_createtime.desc()).first()
         count = 0
         for item in result:
-            count+=1
-        if count:
-            result = True
-        else:
-            result = False
-        return result
+            count=1
+        return count
 
