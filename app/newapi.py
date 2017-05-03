@@ -16,7 +16,7 @@ from tornado.concurrent import run_on_executor
 from model.models import *
 import requests,base64,json
 
-#套餐列表
+#驾校套餐列表
 class PackageIndex(BaseHandler):
     executor = ThreadPoolExecutor(8)
 
@@ -40,7 +40,7 @@ class PackageIndex(BaseHandler):
         return rep
 
 
-#套餐详情
+#某一套餐详情
 class PackageDetail(BaseHandler):
     executor = ThreadPoolExecutor(8)
 
@@ -64,7 +64,7 @@ class PackageDetail(BaseHandler):
         return rep
 
 
-#学员学习记录
+#学员历史学习记录
 class StudentExamList(BaseHandler):
     executor = ThreadPoolExecutor(8)
 
@@ -88,7 +88,7 @@ class StudentExamList(BaseHandler):
         return rep
 
 
-#学员报名列表
+#学员可报名列表
 class StudentExamindex(BaseHandler):
     executor = ThreadPoolExecutor(8)
 
@@ -105,7 +105,7 @@ class StudentExamindex(BaseHandler):
         result = self.DbRead.query(
              self.Courses.courses_id, self.Courses.courses_starttime, self.Courses.courses_endtime).filter(
             self.Student.student_id == self.studentid,
-            # self.Courses.courses_state == 1,
+            self.Courses.courses_state == 1,
             self.Student.student_traineruid == self.Courses.courses_traineruid).all()
         rep = {}
         for res in result:
