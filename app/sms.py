@@ -41,10 +41,18 @@ class SmsSenders(BaseHandler):
         exp_time = "3" #失效时间，单位为分钟
         single_sender = SmsSender.SmsSingleSender(appid, appkey)
         params = [code, exp_time]
+        smlog_message = "您的验证码是%s，请于%s分钟内填写。如非本人操作，请忽略本短信。" % (code,exp_time)
         result = single_sender.send_with_param("86", self.phoneNumber, templ_id, params, "", "", datetime.now())
         rsp = json.loads(result)
-        print rsp
-        self.writejson(json_decode(str(ApiHTTPError(**rsp))))
+        smlog = self.SmLog(smlog_usercode=self.phoneNumber,smlog_message=smlog_message,smlog_createtime=rsp.ext)
+        self.DbRead.add(smlog)
+        self.DbRead.commit()
+        rep_id = smlog.smlog_id
+        self.DbRead.close()
+        print rsp, rep_id
+        result ={}
+        result['data'] = {"id":rep_id,"data":rsp}
+        self.writejson(json_decode(str(ApiHTTPError(**result))))
 
     def generate_verification_code(self,len=6):
         ''' 随机生成6位的验证码 '''
