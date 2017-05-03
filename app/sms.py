@@ -85,7 +85,7 @@ class ValidationCode(BaseHandler):
     @run_on_executor
     def validationcode(self,expired_time):
 
-        result = self.DbRead.query(self.SmLog)\
+        result = self.DbRead.query(self.SmLog.smlog_message,self.SmLog.smlog_createtime)\
             .filter(self.SmLog.smlog_usercode==self.phoneNum,func.substr(self.SmLog.smlog_message,7,6)==self.code)\
             .order_by(self.SmLog.smlog_createtime.desc()).first()
         count = 0
