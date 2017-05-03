@@ -11,5 +11,6 @@ Handlers = [
     (r'/newapi/studentcoursesindex', StudentExamindex),
     (r'/api/GetUserinfo', GetUserinfo),
     (r'/sms/SmsSender', SmsSenders),
+    (r'/sms/validationcode', ValidationCode),
     (r".*", NotFound),
 ]
