@@ -77,6 +77,7 @@ class ValidationCode(BaseHandler):
         self.phoneNum = self.get_json_argument("phoneNum",None)
         expired_time = 3
         result = self.validationcode(expired_time)
+        print result
         rep = {}
         rep['data'] = result
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
