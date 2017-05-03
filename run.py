@@ -19,6 +19,13 @@ def cli(**kwargs):
     http_server.listen(options.port)
     ioloop.IOLoop.instance().start()
 
+    def column_dict(self):
+        model_dict = dict(self.__dict__)
+        del model_dict['_sa_instance_state']
+        return model_dict
+
+    Base.column_dict = column_dict
+
 
 # def init_db():
     # Base.metadata.create_all(EngineInsert)
