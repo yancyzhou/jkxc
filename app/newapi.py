@@ -15,8 +15,6 @@ from concurrent.futures import ThreadPoolExecutor
 from tornado.concurrent import run_on_executor
 from model.models import *
 import requests,base64,json
-from crypto import Cipher
-
 
 #套餐列表
 class PackageIndex(BaseHandler):

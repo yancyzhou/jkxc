@@ -15,7 +15,7 @@ from concurrent.futures import ThreadPoolExecutor
 from tornado.concurrent import run_on_executor
 from model.models import *
 import requests,base64,json
-from crypto import Cipher
+from Crypto.Cipher import AES
 
 
 class PackageIndex(BaseHandler):
@@ -109,16 +109,6 @@ class PackageDetail(BaseHandler):
         rep = {self.packageid: result[0]}
         return rep
 
-    # @run_on_executor
-    # def getdata(self):
-    #     result = self.DbRead.query(
-    #         self.Package.package_describe).filter(
-    #         self.Package.package_state == 1,
-    #         self.Package.package_schooluid == self.schoolid,
-    #         self.Package.package_id == self.packageid).all()
-    #     rep = {self.packageid: result[0]}
-    #     return rep
-
 # class WXBizDataCrypt:
 #
 #     def __init__(self, appId, sessionKey):
@@ -131,7 +121,7 @@ class PackageDetail(BaseHandler):
 #         encryptedData = base64.b64decode(encryptedData)
 #         iv = base64.b64decode(iv)
 #
-#         cipher = Cipher.AES.new(sessionKey, Cipher.AES.MODE_CBC, iv)
+#         cipher = AES.new(sessionKey, AES.MODE_CBC, iv)
 #
 #         decrypted = json.loads(self._unpad(cipher.decrypt(encryptedData)))
 #
