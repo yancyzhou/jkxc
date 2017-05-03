@@ -55,6 +55,7 @@ class SmsSenders(BaseHandler):
             self.DbRead.commit()
             insert_id = smlog.smlog_id
             self.DbRead.close()
+        time.sleep(5)
         if insert_id:
             result ={}
             result['data'] = {"data":rsp}
