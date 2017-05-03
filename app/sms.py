@@ -46,16 +46,21 @@ class SmsSenders(BaseHandler):
         ext = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         result = single_sender.send_with_param("86", self.phoneNumber, templ_id, params, "", "", ext)
         rsp = json.loads(result)
+        insert_id = None
         if rsp['result']!=0:
             pass
         else:
             smlog = self.SmLog(smlog_usercode=self.phoneNumber,smlog_message=smlog_message,smlog_createtime=rsp['ext'])
             self.DbRead.add(smlog)
             self.DbRead.commit()
+            insert_id = smlog.smlog_id
             self.DbRead.close()
-        result ={}
-        result['data'] = {"data":rsp}
-        self.writejson(json_decode(str(ApiHTTPError(**result))))
+        if insert_id:
+            result ={}
+            result['data'] = {"data":rsp}
+            self.writejson(json_decode(str(ApiHTTPError(**result))))
+        else:
+            self.writejson(json_decode(str(ApiHTTPError(10500))))
 
     def generate_verification_code(self,len=6):
         ''' 随机生成6位的验证码 '''
@@ -77,28 +82,21 @@ class ValidationCode(BaseHandler):
         self.phoneNum = self.get_json_argument("phoneNum",None)
         expired_time = 3
         result = yield self.validationcode(expired_time)
-        print result
         rep = {}
         rep['data'] = result
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
 
     @run_on_executor
     def validationcode(self,expired_time):
-
         result = self.DbRead.query(self.SmLog.smlog_createtime)\
             .filter(self.SmLog.smlog_usercode==self.phoneNum,func.substr(self.SmLog.smlog_message,7,6)==self.code)\
             .order_by(self.SmLog.smlog_createtime.desc()).first()
         count = 0
-        print result
-        print result[0]
-        for items in result:
-            print items
         if result:
             for item in result:
-                print item
                 t1 = item
                 t2 = datetime.now()
-                if (t2-t1).seconds<=180:
+                if (t2-t1).seconds<=expired_time*60:
                     count = 1
         return count
 
