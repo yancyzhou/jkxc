@@ -95,6 +95,7 @@ class StudentExamindex(BaseHandler):
     @gen.coroutine
     def post(self):
         self.studentid = self.get_json_argument('studentid', None)
+        self.day = self.get_json_argument('day', None)
         reps = yield self.getdata()
         rep = {}
         rep['data'] = reps
@@ -102,12 +103,16 @@ class StudentExamindex(BaseHandler):
 
     @run_on_executor
     def getdata(self):
+        import time
         result = self.DbRead.query(
-             self.Courses.courses_id, self.Courses.courses_starttime, self.Courses.courses_endtime).filter(
+             self.Courses.courses_id, self.Courses.courses_starttime, self.Courses.courses_endtime,self.Courses.courses_current_number).filter(
             self.Student.student_id == self.studentid,
             self.Courses.courses_state == 1,
+            self.Courses.courses_createtime.like(self.day),
             self.Student.student_traineruid == self.Courses.courses_traineruid).all()
         rep = {}
         for res in result:
-            rep[res[0]] = {"starttime":str(res[1]), "endtime":str(res[2])}
+            item = time.strftime('%H-%m-%d',res.courses_starttime)+"~"+time.strftime('%H-%m-%d',res.courses_endtime)
+
+            rep[res.courses_id] = item
         return rep
