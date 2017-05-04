@@ -96,6 +96,7 @@ class StudentExamindex(BaseHandler):
     def post(self):
         self.studentid = self.get_json_argument('studentid', None)
         self.day = self.get_json_argument('day', None)
+        print self.studentid,self.day
         reps = yield self.getdata()
         rep = {}
         rep['data'] = reps
@@ -105,14 +106,25 @@ class StudentExamindex(BaseHandler):
     def getdata(self):
         import time
         result = self.DbRead.query(
-             self.Courses.courses_id, self.Courses.courses_starttime, self.Courses.courses_endtime,self.Courses.courses_current_number).filter(
+             self.Courses.courses_state, self.Courses.courses_starttime, self.Courses.courses_endtime,self.Courses.courses_current_number).filter(
             self.Student.student_id == self.studentid,
-            self.Courses.courses_state == 1,
-            self.Courses.courses_createtime.like(self.day),
-            self.Student.student_traineruid == self.Courses.courses_traineruid).all()
-        rep = {}
+            self.Student.student_state == self.Courses.courses_type,
+            self.Courses.courses_starttime.like(self.day+"%"),
+            self.Student.student_traineruid == self.Courses.courses_traineruid).order_by(self.Courses.courses_starttime).all()
+        self.DbRead.commit()
+        self.DbRead.close()
+        rep = []
         for res in result:
-            item = time.strftime('%H-%m-%d',res.courses_starttime)+"~"+time.strftime('%H-%m-%d',res.courses_endtime)
-
-            rep[res.courses_id] = item
+            item = res.courses_starttime.strftime('%H-%M-%S')+"~"+res.courses_endtime.strftime('%H-%M-%S')
+            if res.courses_state == 1:
+                disabled = False
+                description = "预约中"
+            elif res.courses_state == 2:
+                disabled = True
+                description = "预约已满"
+            elif res.courses_state ==3:
+                disabled = True
+                description = "已关闭"
+            tmp = {"name":item,"checked":False,"count":res.courses_current_number,"disabled":disabled,"description":description}
+            rep.append(tmp)
         return rep
