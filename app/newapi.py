@@ -115,7 +115,7 @@ class StudentExamindex(BaseHandler):
         self.DbRead.close()
         rep = []
         for res in result:
-            item = res.courses_starttime.strftime('%H-%M-%S')+"~"+res.courses_endtime.strftime('%H-%M-%S')
+            item = res.courses_starttime.strftime('%H:%M')+"~"+res.courses_endtime.strftime('%H:%M')
             if res.courses_state == 1:
                 disabled = False
                 description = "预约中"
