@@ -19,6 +19,7 @@ from Handler import BaseHandler,ApiHTTPError
 from tornado.escape import json_decode,json_encode
 from concurrent.futures import ThreadPoolExecutor
 from tornado.concurrent import run_on_executor
+from sqlalchemy import func, extract, distinct
 import json,random,time
 from datetime import datetime
 import lib.Qcloud.Sms.sms as SmsSender
@@ -45,16 +46,22 @@ class SmsSenders(BaseHandler):
         ext = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         result = single_sender.send_with_param("86", self.phoneNumber, templ_id, params, "", "", ext)
         rsp = json.loads(result)
+        insert_id = None
         if rsp['result']!=0:
             pass
         else:
             smlog = self.SmLog(smlog_usercode=self.phoneNumber,smlog_message=smlog_message,smlog_createtime=rsp['ext'])
             self.DbRead.add(smlog)
             self.DbRead.commit()
+            insert_id = smlog.smlog_id
             self.DbRead.close()
-        result ={}
-        result['data'] = {"data":rsp}
-        self.writejson(json_decode(str(ApiHTTPError(**result))))
+        time.sleep(5)
+        if insert_id:
+            result ={}
+            result['data'] = {"data":rsp}
+            self.writejson(json_decode(str(ApiHTTPError(**result))))
+        else:
+            self.writejson(json_decode(str(ApiHTTPError(10500))))
 
     def generate_verification_code(self,len=6):
         ''' 随机生成6位的验证码 '''
@@ -64,3 +71,33 @@ class SmsSenders(BaseHandler):
         myslice = random.sample(code_list, len)  # 从list中随机获取6个元素，作为一个片断返回
         verification_code = ''.join(myslice)  # list to string
         return verification_code
+
+
+class ValidationCode(BaseHandler):
+
+    executor = ThreadPoolExecutor(8)
+
+    @gen.coroutine
+    def post(self, *args, **kwargs):
+        self.code = self.get_json_argument("code",None)
+        self.phoneNum = self.get_json_argument("phoneNum",None)
+        expired_time = 3
+        result = yield self.validationcode(expired_time)
+        rep = {}
+        rep['data'] = result
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+    @run_on_executor
+    def validationcode(self,expired_time):
+        result = self.DbRead.query(self.SmLog.smlog_createtime).filter(self.SmLog.smlog_usercode==self.phoneNum,func.substr(self.SmLog.smlog_message,7,6)==self.code).order_by(self.SmLog.smlog_createtime.desc()).first()
+        self.DbRead.commit()
+        self.DbRead.close()
+        count = 0
+        if result:
+            for item in result:
+                t1 = item
+                t2 = datetime.now()
+                if (t2-t1).seconds<=expired_time*60:
+                    count = 1
+        return count
+

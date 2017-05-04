@@ -2,9 +2,10 @@
 Errorconfig.pyc
 Handler.pyc
 config.pyc
-dbclient/__init__.pyc
+dbclient
 utils.pyc
 admin/__init__.py
 app/__init__.py
 model/__init__.py
-dbclient/dbconfig.json
+*.pyc
+
