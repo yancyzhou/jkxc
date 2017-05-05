@@ -97,6 +97,8 @@ class StudentExamList(BaseHandler):
                 courses_list.append(item_dict)
         for item in courses_list:
             item['Periodoftime'] = rep[item['day']]
+        self.DbRead.commit()
+        self.DbRead.close()
         return courses_list
 
 #保存学车记录
