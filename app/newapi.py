@@ -115,7 +115,7 @@ class StudentExamindex(BaseHandler):
 
     @run_on_executor
     def getdata(self):
-        result = self.DbRead.query(
+        result = self.DbRead.query(self.Courses.courses_id,
              self.Courses.courses_state, self.Courses.courses_starttime, self.Courses.courses_endtime,self.Courses.courses_current_number).filter(
             self.Student.student_id == self.studentid,
             self.Student.student_state == self.Courses.courses_type,
@@ -130,12 +130,12 @@ class StudentExamindex(BaseHandler):
             description = "预约中"
             if res.courses_state == 1:
                 pass
-            elif res.courses_state == 2:
+            elif res.courses_state == 3:
                 disabled = True
                 description = "预约已满"
-            elif res.courses_state ==3:
+            elif res.courses_state ==2:
                 disabled = True
                 description = "已关闭"
-            tmp = {"name":item,"checked":False,"count":res.courses_current_number,"disabled":disabled,"description":description}
+            tmp = {"name":item,"CoursesId":res.courses_id,"checked":False,"count":res.courses_current_number,"disabled":disabled,"description":description}
             rep.append(tmp)
         return rep
