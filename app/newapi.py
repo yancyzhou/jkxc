@@ -77,7 +77,7 @@ class StudentExamList(BaseHandler):
         for item in reps:
             for items in item['Periodoftime']:
                 selecttimeitem = item['day']+" "+items.split("~")[1]+":00"
-                if time.strptime(selecttimeitem, '%Y-%m-%d %H:%M:%S')>time.localtime(time.time()):
+                if time.strptime(selecttimeitem, '%Y-%m-%d %H:%M:%S')<time.localtime(time.time()):
                     status = 1
             item['status'] = status
         rep = {}
