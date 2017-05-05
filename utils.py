@@ -9,6 +9,7 @@ Handlers = [
     (r'/api/package', PackageIndex),
     (r'/api/studentcourseslist', StudentExamList),
     (r'/api/studentcoursesindex', StudentExamindex),
+    (r'/api/SaveStudentExam', SaveStudentExam),
     (r'/api/GetUserinfo', GetUserinfo),
     (r'/api/SmsSender', SmsSenders),
     (r'/api/validationcode', ValidationCode),

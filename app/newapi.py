@@ -87,6 +87,17 @@ class StudentExamList(BaseHandler):
             rep[res[0]] = {"starttime":str(res[1]), "endtime":str(res[2])}
         return rep
 
+#保存学车记录
+class SaveStudentExam(BaseHandler):
+    executor = ThreadPoolExecutor(8)
+
+    @gen.coroutine
+    def post(self, *args, **kwargs):
+        self.Periodoftime = self.get_json_argument("Periodoftime",None)
+        self.StudentOpenid = self.get_json_argument("StudentOpenid",None)
+        rep = {}
+        rep['data'] = self.Periodoftime
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
 
 #学员可报名列表
 class StudentExamindex(BaseHandler):
@@ -96,7 +107,6 @@ class StudentExamindex(BaseHandler):
     def post(self):
         self.studentid = self.get_json_argument('studentid', None)
         self.day = self.get_json_argument('day', None)
-        print self.studentid,self.day
         reps = yield self.getdata()
         rep = {}
         rep['data'] = reps
@@ -104,7 +114,6 @@ class StudentExamindex(BaseHandler):
 
     @run_on_executor
     def getdata(self):
-        import time
         result = self.DbRead.query(
              self.Courses.courses_state, self.Courses.courses_starttime, self.Courses.courses_endtime,self.Courses.courses_current_number).filter(
             self.Student.student_id == self.studentid,
@@ -116,9 +125,10 @@ class StudentExamindex(BaseHandler):
         rep = []
         for res in result:
             item = res.courses_starttime.strftime('%H:%M')+"~"+res.courses_endtime.strftime('%H:%M')
+            disabled = False
+            description = "预约中"
             if res.courses_state == 1:
-                disabled = False
-                description = "预约中"
+                pass
             elif res.courses_state == 2:
                 disabled = True
                 description = "预约已满"
