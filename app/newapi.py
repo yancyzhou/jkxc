@@ -82,6 +82,7 @@ class StudentExamList(BaseHandler):
             item['status'] = status
             item['Periodoftime'] = ",".join(item['Periodoftime'])
         rep = {}
+        reps = sorted(reps, key=lambda student: student['day'],reverse=True)
         rep['data'] = reps
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
 
