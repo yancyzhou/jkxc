@@ -128,6 +128,7 @@ class SaveStudentExam(BaseHandler):
                 self.DbRead.close()
             except Exception as e:
                 print e
+                self.DbRead.rollback()
                 continue
         # print studentCourses.sc_id
 
