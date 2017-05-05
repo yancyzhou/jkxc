@@ -120,9 +120,12 @@ class SaveStudentExam(BaseHandler):
         self.Periodoftime = self.get_json_argument("Periodoftime",None)
         self.StudentOpenid = self.get_json_argument("StudentOpenid",None)
         for item in list(self.Periodoftime):
-            studentCourses = self.Student_courses(sc_coursesuid=item,sc_studentuid= self.StudentOpenid)
-            self.DbRead.add(studentCourses)
-            self.DbRead.commit()
+            try:
+                studentCourses = self.Student_courses(sc_coursesuid=item,sc_studentuid= self.StudentOpenid)
+                self.DbRead.add(studentCourses)
+                self.DbRead.commit()
+            except Exception as e:
+                continue
         # print studentCourses.sc_id
         self.DbRead.close()
         rep = {}
