@@ -124,6 +124,7 @@ class SaveStudentExam(BaseHandler):
                 studentCourses = self.Student_courses(sc_coursesuid=item,sc_studentuid= self.StudentOpenid)
                 self.DbRead.add(studentCourses)
                 self.DbRead.commit()
+                self.DbRead.flush()
                 self.DbRead.close()
             except Exception as e:
                 continue
