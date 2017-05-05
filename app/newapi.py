@@ -124,10 +124,11 @@ class SaveStudentExam(BaseHandler):
                 studentCourses = self.Student_courses(sc_coursesuid=item,sc_studentuid= self.StudentOpenid)
                 self.DbRead.add(studentCourses)
                 self.DbRead.commit()
+                self.DbRead.close()
             except Exception as e:
                 continue
         # print studentCourses.sc_id
-        self.DbRead.close()
+
         rep = {}
         rep['data'] = self.Periodoftime
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
