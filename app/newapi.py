@@ -79,9 +79,9 @@ class StudentExamList(BaseHandler):
     @run_on_executor
     def getdata(self):
         result = self.DbRead.query(
-             self.Courses.courses_id, self.Courses.courses_starttime, self.Courses.courses_endtime).filter(
+             self.Courses.courses_id, self.Courses.courses_starttime, self.Courses.courses_endtime,func.substr(self.Courses.courses_starttime,1,10).label("date")).filter(
             self.Student_courses.sc_studentuid == self.studentid,
-            self.Student_courses.sc_coursesuid == self.Courses.courses_id).all()
+            self.Student_courses.sc_coursesuid == self.Courses.courses_id).group_by("date").all()
         rep = {}
         for res in result:
             rep[res[0]] = {"starttime":str(res[1]), "endtime":str(res[2])}
