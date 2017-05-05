@@ -84,7 +84,12 @@ class StudentExamList(BaseHandler):
             self.Student_courses.sc_coursesuid == self.Courses.courses_id).all()
         rep = {}
         for res in result:
-            rep[res[0]] = {"starttime":str(res[1]), "endtime":str(res[2])}
+            item = res.courses_starttime.strftime('%H:%M') + "~" + res.courses_endtime.strftime('%H:%M')
+            datekey = res.courses_starttime.strftime('%Y-%m-%d')
+            if datekey in rep.keys():
+                rep[datekey].append(item)
+            else:
+                rep[datekey] = [item]
         return rep
 
 #保存学车记录
