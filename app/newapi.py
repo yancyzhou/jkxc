@@ -70,8 +70,16 @@ class StudentExamList(BaseHandler):
 
     @gen.coroutine
     def post(self):
+        import time
         self.studentid = self.get_json_argument('studentid', None)
         reps = yield self.getdata()
+        status = 0
+        for item in reps:
+            for items in item['Periodoftime']:
+                selecttimeitem = item['day']+" "+items+":00"
+                if time.strptime(selecttimeitem, '%Y-%m-%d %H:%M:%S')>datetime.now():
+                    status = 1
+            item['status'] = status
         rep = {}
         rep['data'] = reps
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
