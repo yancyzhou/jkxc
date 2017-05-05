@@ -122,7 +122,7 @@ class SaveStudentExam(BaseHandler):
         for item in list(self.Periodoftime):
             studentCourses = self.Student_courses(sc_coursesuid=item,sc_studentuid= self.StudentOpenid)
             self.DbRead.add(studentCourses)
-        self.DbRead.commit()
+            self.DbRead.commit()
         # print studentCourses.sc_id
         self.DbRead.close()
         rep = {}
