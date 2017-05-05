@@ -96,7 +96,7 @@ class StudentExamList(BaseHandler):
             if item_dict not in courses_list:
                 courses_list.append(item_dict)
         for item in courses_list:
-            item['Periodoftime'] = rep[item.day]
+            item['Periodoftime'] = rep[item['day']]
         return courses_list
 
 #保存学车记录
