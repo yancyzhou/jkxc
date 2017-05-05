@@ -73,8 +73,8 @@ class StudentExamList(BaseHandler):
         import time
         self.studentid = self.get_json_argument('studentid', None)
         reps = yield self.getdata()
-        status = 0
         for item in reps:
+            status = 0
             for items in item['Periodoftime']:
                 selecttimeitem = item['day']+" "+items.split("~")[1]+":00"
                 if time.strptime(selecttimeitem, '%Y-%m-%d %H:%M:%S')<time.localtime(time.time()):
