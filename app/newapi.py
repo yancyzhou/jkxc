@@ -92,7 +92,7 @@ class StudentExamList(BaseHandler):
                 rep[datekey].append(item)
             else:
                 rep[datekey] = [item]
-            item_dict = {"createtime":res.sc_createtime,"day":datekey}
+            item_dict = {"createtime":res.sc_createtime.strftime('%Y-%m-%d %H:%M:%S'),"day":datekey}
             if item_dict not in courses_list:
                 courses_list.append(item_dict)
         for item in courses_list:
