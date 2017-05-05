@@ -95,7 +95,7 @@ class SaveStudentExam(BaseHandler):
     def post(self, *args, **kwargs):
         self.Periodoftime = self.get_json_argument("Periodoftime",None)
         self.StudentOpenid = self.get_json_argument("StudentOpenid",None)
-        for item in self.Periodoftime.split(""):
+        for item in list(self.Periodoftime):
             studentCourses = self.Student_courses(sc_coursesuid=item,sc_studentuid= self.StudentOpenid)
             self.DbRead.add(studentCourses)
             self.DbRead.commit()
