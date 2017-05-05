@@ -79,18 +79,25 @@ class StudentExamList(BaseHandler):
     @run_on_executor
     def getdata(self):
         result = self.DbRead.query(
-             self.Courses.courses_id, self.Courses.courses_starttime, self.Courses.courses_endtime).filter(
+             self.Courses.courses_id, self.Courses.courses_starttime, self.Courses.courses_endtime,self.Student_courses.sc_createtime).filter(
             self.Student_courses.sc_studentuid == self.studentid,
             self.Student_courses.sc_coursesuid == self.Courses.courses_id).all()
         rep = {}
+        courses_list = []
         for res in result:
             item = res.courses_starttime.strftime('%H:%M') + "~" + res.courses_endtime.strftime('%H:%M')
+
             datekey = res.courses_starttime.strftime('%Y-%m-%d')
             if datekey in rep.keys():
                 rep[datekey].append(item)
             else:
                 rep[datekey] = [item]
-        return rep
+            item_dict = {"createtime":res.sc_createtime,"day":datekey}
+            if item_dict not in courses_list:
+                courses_list.append(item_dict)
+        for item in courses_list:
+            item['Periodoftime'] = rep[item.day]
+        return courses_list
 
 #保存学车记录
 class SaveStudentExam(BaseHandler):
