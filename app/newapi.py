@@ -80,6 +80,7 @@ class StudentExamList(BaseHandler):
                 if time.strptime(selecttimeitem, '%Y-%m-%d %H:%M:%S')<time.localtime(time.time()):
                     status = 1
             item['status'] = status
+            item['Periodoftime'] = item['Periodoftime'].join(",")
         rep = {}
         rep['data'] = reps
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
