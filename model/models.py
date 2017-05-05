@@ -206,7 +206,7 @@ class Student_courses(Base):
     sc_state = Column(BIGINT(9))
     sc_createtime = Column(DATETIME(20))
 
-    def __init__(self, sc_traineruid=0, sc_coursesuid=0, sc_studentuid=0, sc_state=0, sc_createtime=None):
+    def __init__(self, sc_traineruid=0, sc_coursesuid=0, sc_studentuid=0, sc_state=0, sc_createtime=datetime.now()):
         self.sc_traineruid = sc_traineruid
         self.sc_coursesuid = sc_coursesuid
         self.sc_studentuid = sc_studentuid

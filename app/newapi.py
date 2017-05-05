@@ -95,7 +95,11 @@ class SaveStudentExam(BaseHandler):
     def post(self, *args, **kwargs):
         self.Periodoftime = self.get_json_argument("Periodoftime",None)
         self.StudentOpenid = self.get_json_argument("StudentOpenid",None)
-        print self.Periodoftime
+        for item in self.Periodoftime.split(""):
+            studentCourses = self.Student_courses(sc_coursesuid=item,sc_studentuid= self.StudentOpenid)
+            self.DbRead.add(studentCourses)
+            self.DbRead.commit()
+        self.DbRead.close()
         rep = {}
         rep['data'] = self.Periodoftime
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
