@@ -127,6 +127,7 @@ class SaveStudentExam(BaseHandler):
                 self.DbRead.flush()
                 self.DbRead.close()
             except Exception as e:
+                print e
                 continue
         # print studentCourses.sc_id
 
