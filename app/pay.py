@@ -23,18 +23,18 @@ import urllib, urllib2, requests, random, hashlib, sys
 
 class SetOrder(BaseHandler):
     def XmlData(self,id):
-        appidvalue = "填写自己的appid"  # appid
+        appidvalue = "wxad81631247e48b3e"  # appid
         attachvalue = "PayTest"
-        mch_idvalue = "填写自己的mchid"  # mch_id
+        mch_idvalue = "1467218302"  # mch_id
         nonce_strvalue = self.GetRandomStr
-        bodyvalue = "NATIVETest"
+        bodyvalue = "NATIVE"
         out_trade_novalue = id
-        total_feevalue = "998"  # 价格
-        spbill_create_ipvalue = "192.168.1.3"
-        notify_urlvalue = "http://www.baidu.com"  # 用户回调URL地址
+        total_feevalue = "1"  # 价格
+        spbill_create_ipvalue = "36.5.160.59"
+        notify_urlvalue = "http://www.weixin.qq.com/wxpay/pay.php"  # 用户回调URL地址
         trade_typevalue = "NATIVE"
         product_idvalue = "12235413214070356458058"
-        key = "填写自己的校验key"  # 用户配置
+        key = ""  # 用户配置
 
         formatstr = 'appid=%s&attach=%s&body=%s&mch_id=%s&nonce_str=%s&notify_url=%s&out_trade_no=%s&product_id=%s' \
                     '&spbill_create_ip=%s&total_fee=%s&trade_type=%s&key=%s' % (
@@ -68,7 +68,7 @@ class SetOrder(BaseHandler):
         return result
 
 
-    def Post(self,data):
+    def Posts(self,data):
         url = "https://api.mch.weixin.qq.com/pay/unifiedorder"
         headers = {"Content-Type": "text/xml"}
         rep = urllib2.Request(url=url, headers=headers, data=data)
@@ -79,5 +79,5 @@ class SetOrder(BaseHandler):
 
     def post(self, *args, **kwargs):
         type = sys.getfilesystemencoding()
-        result = self.Post(self.XmlData("123511654189415"))
+        result = self.Posts(self.XmlData("123511654189415"))
         print result.decode('utf-8').encode(type)

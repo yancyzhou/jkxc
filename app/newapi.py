@@ -109,36 +109,28 @@ class SaveStudentExam(BaseHandler):
         self.Periodoftime = self.get_json_argument("Periodoftime",None)
         self.StudentOpenid = self.get_json_argument("StudentOpenid",None)
         Periodoftime = self.Periodoftime.split("&")
-        courses = self.DbRead.query(self.Courses.courses_current_number,self.Courses.courses_limit_number).filter(self.Courses.courses_id.in_(Periodoftime),self.Courses.courses_current_number<self.Courses.courses_limit_number).all()
-
+        courses = self.DbRead.query(self.Courses).filter(self.Courses.courses_id.in_(Periodoftime),self.Courses.courses_current_number<self.Courses.courses_limit_number).with_lockmode("update").all()
         if len(courses) == len(Periodoftime):
-            print courses[0]
+            for item in courses:
+                tmp = item.courses_current_number+1
+                item.courses_current_number = tmp
             # for item in courses:
                 # item.courses_current_number += 1
             self.DbRead.commit()
-        # for items in Periodoftime:
-        #     try:
-        #         studentCourses = self.Student_courses(sc_coursesuid=items, sc_studentuid=self.StudentOpenid)
-        #         self.DbRead.add(studentCourses)
-        #         self.DbRead.commit()
-        #         self.DbRead.flush()
-        #         self.DbRead.close()
-        #     except Exception as e:
-        #         print e
-        #         self.DbRead.rollback()
+            for items in Periodoftime:
+                try:
+                    studentCourses = self.Student_courses(sc_coursesuid=items, sc_studentuid=self.StudentOpenid)
+                    self.DbRead.add(studentCourses)
+                    self.DbRead.commit()
+                    self.DbRead.close()
+                except Exception as e:
+                    self.DbRead.rollback()
+                    self.DbRead.close()
             rep = {}
             rep['data'] = self.Periodoftime
             self.writejson(json_decode(str(ApiHTTPError(**rep))))
         else:
-            try:
-                print courses[0]
-                for item in courses:
-                    print item.courses_current_number
-                for items in courses:
-                    print items
-                self.DbRead.commit()
-            except Exception as e:
-                self.DbRead.commit()
+            self.DbRead.commit()
             self.writejson(json_decode(str(ApiHTTPError(30002))))
 
 #学员可报名列表

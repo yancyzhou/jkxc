@@ -13,6 +13,7 @@ Handlers = [
     (r'/api/Studentoftrainer', Studentoftrainer),
     (r'/api/GetUserinfo', GetUserinfo),
     (r'/api/SmsSender', SmsSenders),
+    (r'/api/SetOrder', SetOrder),
     (r'/api/validationcode', ValidationCode),
     (r".*", NotFound),
 ]
