@@ -112,8 +112,6 @@ class SaveStudentExam(BaseHandler):
             for item in courses:
                 tmp = item.courses_current_number+1
                 item.courses_current_number = tmp
-            # for item in courses:
-                # item.courses_current_number += 1
             self.DbRead.commit()
             for items in Periodoftime:
                 try:
