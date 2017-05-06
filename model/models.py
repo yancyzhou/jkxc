@@ -114,8 +114,8 @@ class Courses(Base):
     courses_hour = Column(FLOAT(5))
     courses_type = Column(BIGINT(9))
     courses_state = Column(BIGINT(9))
-    courses_current_number = Column(BIGINT(9))
-    courses_limit_number = Column(BIGINT(9))
+    courses_current_number = Column(BIGINT(9),index=True)
+    courses_limit_number = Column(BIGINT(9),index=True)
     courses_epuid = Column(BIGINT(11))
     courses_createtime = Column(DATETIME(25))
 

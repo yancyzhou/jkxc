@@ -112,23 +112,29 @@ class SaveStudentExam(BaseHandler):
         courses = self.DbRead.query(self.Courses.courses_current_number,self.Courses.courses_limit_number).filter(self.Courses.courses_id.in_(Periodoftime),self.Courses.courses_current_number<self.Courses.courses_limit_number).with_lockmode('update').all()
 
         if len(courses) == len(Periodoftime):
-            for item in courses:
-
-                try:
-                    studentCourses = self.Student_courses(sc_coursesuid=item,sc_studentuid= self.StudentOpenid)
-                    self.DbRead.add(studentCourses)
-                    self.DbRead.commit()
-                    self.DbRead.flush()
-                    self.DbRead.close()
-                except Exception as e:
-                    print e
-                    self.DbRead.rollback()
-                    continue
+            print courses[0]
+            # for item in courses:
+                # item.courses_current_number += 1
+            self.DbRead.flush()
+        # for items in Periodoftime:
+        #     try:
+        #         studentCourses = self.Student_courses(sc_coursesuid=items, sc_studentuid=self.StudentOpenid)
+        #         self.DbRead.add(studentCourses)
+        #         self.DbRead.commit()
+        #         self.DbRead.flush()
+        #         self.DbRead.close()
+        #     except Exception as e:
+        #         print e
+        #         self.DbRead.rollback()
             rep = {}
             rep['data'] = self.Periodoftime
             self.writejson(json_decode(str(ApiHTTPError(**rep))))
         else:
-            self.writejson(json_decode(str(ApiHTTPError(10500))))
+            print courses[0]
+            for item in courses:
+                item.courses_current_number = item.courses_current_number+1
+            self.DbRead.flush()
+            self.writejson(json_decode(str(ApiHTTPError(30002))))
 
 #学员可报名列表
 class StudentExamindex(BaseHandler):
