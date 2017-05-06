@@ -63,54 +63,6 @@ class PackageDetail(BaseHandler):
 
 
 #学员历史学习记录
-# class StudentExamList(BaseHandler):
-#     executor = ThreadPoolExecutor(8)
-#
-#     @gen.coroutine
-#     def post(self):
-#         import time
-#         self.studentid = self.get_json_argument('studentid', None)
-#         reps = yield self.getdata()
-#         for item in reps:
-#             print item
-#             status = 0
-#             for items in item['Periodoftime']:
-#                 selecttimeitem = item['day']+" "+items.split("~")[1]+":00"
-#                 print selecttimeitem
-#                 if time.strptime(selecttimeitem, '%Y-%m-%d %H:%M:%S')<time.localtime(time.time()):
-#                     status = 1
-#             item['status'] = status
-#             item['Periodoftime'] = ",".join(item['Periodoftime'])
-#         rep = {}
-#         reps = sorted(reps, key=lambda student: student['day'],reverse=True)
-#         rep['data'] = reps
-#         self.writejson(json_decode(str(ApiHTTPError(**rep))))
-#
-#     @run_on_executor
-#     def getdata(self):
-#         result = self.DbRead.query(
-#              self.Courses.courses_id, self.Courses.courses_starttime, self.Courses.courses_endtime,self.Student_courses.sc_createtime).filter(
-#             self.Student_courses.sc_studentuid == self.studentid,
-#             self.Student_courses.sc_coursesuid == self.Courses.courses_id).all()
-#         rep = {}
-#         courses_list = []
-#         for res in result:
-#             item = res.courses_starttime.strftime('%H:%M') + "~" + res.courses_endtime.strftime('%H:%M')
-#
-#             datekey = res.courses_starttime.strftime('%Y-%m-%d')
-#             if datekey in rep.keys():
-#                 rep[datekey].append(item)
-#             else:
-#                 rep[datekey] = [item]
-#             item_dict = {"createtime":res.sc_createtime.strftime('%Y-%m-%d %H:%M:%S'),"day":datekey}
-#             if item_dict not in courses_list:
-#                 courses_list.append(item_dict)
-#         for item in courses_list:
-#             item['Periodoftime'] = rep[item['day']]
-#         self.DbRead.commit()
-#         self.DbRead.close()
-#         return courses_list
-
 class StudentExamList(BaseHandler):
     executor = ThreadPoolExecutor(8)
 
@@ -156,23 +108,27 @@ class SaveStudentExam(BaseHandler):
     def post(self, *args, **kwargs):
         self.Periodoftime = self.get_json_argument("Periodoftime",None)
         self.StudentOpenid = self.get_json_argument("StudentOpenid",None)
-        Periodoftime = list(self.Periodoftime)
-        courses = self.DbRead.query(self.Courses).filter(self.Courses.courses_id.in_(Periodoftime),self.Courses.courses_current_number<self.Courses.courses_limit_number).all()
-        print len(courses)
-        for item in Periodoftime:
-            try:
-                studentCourses = self.Student_courses(sc_coursesuid=item,sc_studentuid= self.StudentOpenid)
-                self.DbRead.add(studentCourses)
-                self.DbRead.commit()
-                self.DbRead.flush()
-                self.DbRead.close()
-            except Exception as e:
-                print e
-                self.DbRead.rollback()
-                continue
-        rep = {}
-        rep['data'] = self.Periodoftime
-        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+        Periodoftime = self.Periodoftime.split("&")
+        courses = self.DbRead.query(self.Courses.courses_current_number,self.Courses.courses_limit_number).filter(self.Courses.courses_id.in_(Periodoftime),self.Courses.courses_current_number<self.Courses.courses_limit_number).with_lockmode('update').all()
+
+        if len(courses) == len(Periodoftime):
+            for item in courses:
+
+                try:
+                    studentCourses = self.Student_courses(sc_coursesuid=item,sc_studentuid= self.StudentOpenid)
+                    self.DbRead.add(studentCourses)
+                    self.DbRead.commit()
+                    self.DbRead.flush()
+                    self.DbRead.close()
+                except Exception as e:
+                    print e
+                    self.DbRead.rollback()
+                    continue
+            rep = {}
+            rep['data'] = self.Periodoftime
+            self.writejson(json_decode(str(ApiHTTPError(**rep))))
+        else:
+            self.writejson(json_decode(str(ApiHTTPError(10500))))
 
 #学员可报名列表
 class StudentExamindex(BaseHandler):
@@ -216,4 +172,32 @@ class StudentExamindex(BaseHandler):
                     description = "已关闭"
             tmp = {"name":item,"CoursesId":res.courses_id,"checked":False,"count":res.courses_current_number,"disabled":disabled,"description":description}
             rep.append(tmp)
+        return rep
+
+
+#获取学员教练
+class Studentoftrainer(BaseHandler):
+    executor = ThreadPoolExecutor(8)
+
+    @gen.coroutine
+    def post(self):
+        self.studentid = self.get_json_argument('studentid', None)
+        reps = yield self.getdata()
+        rep = {}
+        rep['data'] = reps
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+    @run_on_executor
+    def getdata(self):
+        result = self.DbRead.query(self.Trainer.trainer_id, self.Trainer.trainer_name, self.Trainer.trainer_code, self.Trainer.trainer_dic, self.Trainer.trainer_years).filter(
+            self.Student.student_wxcode == self.studentid).first()
+        result1 = self.DbRead.query(func.count(1).label("studentnum")).filter(
+            self.Student.student_traineruid == result.trainer_id).first()
+        result2 = self.DbRead.query(func.count(1).label("learntime")).filter(
+            self.Courses.courses_traineruid == result.trainer_id, self.Courses.courses_state != 4).first()
+        self.DbRead.commit()
+        self.DbRead.close()
+        rep = {"trainer_name": result.trainer_name, "trainer_code": result.trainer_code,
+               "trainer_dic": result.trainer_dic, "trainer_years": result.trainer_years,
+               "studentnum": result1.studentnum,"learntime": result2.learntime}
         return rep

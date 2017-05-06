@@ -74,9 +74,12 @@ class Trainer(Base):
     trainer_rank = Column(BIGINT(9))
     trainer_state = Column(BIGINT(9))
     trainer_schooluid = Column(BIGINT(11))
+    trainer_dic = Column(TEXT)
+    trainer_years = Column(BIGINT(9))
 
-    def __init__(self, trainer_name=None, trainer_code=None, trainer_password=None,trainer_headpic=None, trainer_type=0, trainer_rank=0,
-                 trainer_state=0,trainer_schooluid=None):
+    def __init__(self, trainer_id=None,trainer_name=None, trainer_code=None, trainer_password=None,trainer_headpic=None, trainer_type=0, trainer_rank=0,
+                 trainer_state=0,trainer_schooluid=None, trainer_dic=None, trainer_years=0):
+        self.trainer_id = trainer_id
         self.trainer_name = trainer_name
         self.trainer_code = trainer_code
         self.trainer_password = trainer_password
@@ -85,6 +88,8 @@ class Trainer(Base):
         self.trainer_rank = trainer_rank
         self.trainer_state = trainer_state
         self.trainer_schooluid = trainer_schooluid
+        self.trainer_dic = trainer_dic
+        self.trainer_years = trainer_years
 
 
 class School(Base):
