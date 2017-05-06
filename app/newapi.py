@@ -63,6 +63,54 @@ class PackageDetail(BaseHandler):
 
 
 #学员历史学习记录
+# class StudentExamList(BaseHandler):
+#     executor = ThreadPoolExecutor(8)
+#
+#     @gen.coroutine
+#     def post(self):
+#         import time
+#         self.studentid = self.get_json_argument('studentid', None)
+#         reps = yield self.getdata()
+#         for item in reps:
+#             print item
+#             status = 0
+#             for items in item['Periodoftime']:
+#                 selecttimeitem = item['day']+" "+items.split("~")[1]+":00"
+#                 print selecttimeitem
+#                 if time.strptime(selecttimeitem, '%Y-%m-%d %H:%M:%S')<time.localtime(time.time()):
+#                     status = 1
+#             item['status'] = status
+#             item['Periodoftime'] = ",".join(item['Periodoftime'])
+#         rep = {}
+#         reps = sorted(reps, key=lambda student: student['day'],reverse=True)
+#         rep['data'] = reps
+#         self.writejson(json_decode(str(ApiHTTPError(**rep))))
+#
+#     @run_on_executor
+#     def getdata(self):
+#         result = self.DbRead.query(
+#              self.Courses.courses_id, self.Courses.courses_starttime, self.Courses.courses_endtime,self.Student_courses.sc_createtime).filter(
+#             self.Student_courses.sc_studentuid == self.studentid,
+#             self.Student_courses.sc_coursesuid == self.Courses.courses_id).all()
+#         rep = {}
+#         courses_list = []
+#         for res in result:
+#             item = res.courses_starttime.strftime('%H:%M') + "~" + res.courses_endtime.strftime('%H:%M')
+#
+#             datekey = res.courses_starttime.strftime('%Y-%m-%d')
+#             if datekey in rep.keys():
+#                 rep[datekey].append(item)
+#             else:
+#                 rep[datekey] = [item]
+#             item_dict = {"createtime":res.sc_createtime.strftime('%Y-%m-%d %H:%M:%S'),"day":datekey}
+#             if item_dict not in courses_list:
+#                 courses_list.append(item_dict)
+#         for item in courses_list:
+#             item['Periodoftime'] = rep[item['day']]
+#         self.DbRead.commit()
+#         self.DbRead.close()
+#         return courses_list
+
 class StudentExamList(BaseHandler):
     executor = ThreadPoolExecutor(8)
 
@@ -72,41 +120,30 @@ class StudentExamList(BaseHandler):
         self.studentid = self.get_json_argument('studentid', None)
         reps = yield self.getdata()
         for item in reps:
-            print item
             status = 0
-            for items in item['Periodoftime']:
-                selecttimeitem = item['day']+" "+items.split("~")[1]+":00"
-                print selecttimeitem
-                if time.strptime(selecttimeitem, '%Y-%m-%d %H:%M:%S')<time.localtime(time.time()):
-                    status = 1
+            selecttimeitem = item['day'] + " " + item['Periodoftime'].split("~")[1] + ":00"
+            if time.strptime(selecttimeitem, '%Y-%m-%d %H:%M:%S') < time.localtime(time.time()):
+                status = 1
             item['status'] = status
-            item['Periodoftime'] = ",".join(item['Periodoftime'])
         rep = {}
-        reps = sorted(reps, key=lambda student: student['day'],reverse=True)
+        reps = sorted(reps, key=lambda student: student['day'], reverse=True)
         rep['data'] = reps
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
 
     @run_on_executor
     def getdata(self):
         result = self.DbRead.query(
-             self.Courses.courses_id, self.Courses.courses_starttime, self.Courses.courses_endtime,self.Student_courses.sc_createtime).filter(
+            self.Courses.courses_id, self.Courses.courses_starttime, self.Courses.courses_endtime,
+            self.Student_courses.sc_createtime).filter(
             self.Student_courses.sc_studentuid == self.studentid,
             self.Student_courses.sc_coursesuid == self.Courses.courses_id).all()
-        rep = {}
         courses_list = []
         for res in result:
             item = res.courses_starttime.strftime('%H:%M') + "~" + res.courses_endtime.strftime('%H:%M')
-
             datekey = res.courses_starttime.strftime('%Y-%m-%d')
-            if datekey in rep.keys():
-                rep[datekey].append(item)
-            else:
-                rep[datekey] = [item]
-            item_dict = {"createtime":res.sc_createtime.strftime('%Y-%m-%d %H:%M:%S'),"day":datekey}
-            if item_dict not in courses_list:
-                courses_list.append(item_dict)
-        for item in courses_list:
-            item['Periodoftime'] = rep[item['day']]
+            item_dict = {"createtime": res.sc_createtime.strftime('%Y-%m-%d %H:%M:%S'), "day": datekey}
+            item_dict['Periodoftime'] = item
+            courses_list.append(item_dict)
         self.DbRead.commit()
         self.DbRead.close()
         return courses_list
