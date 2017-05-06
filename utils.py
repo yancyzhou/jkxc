@@ -15,5 +15,6 @@ Handlers = [
     (r'/api/SmsSender', SmsSenders),
     (r'/api/SetOrder', SetOrder),
     (r'/api/validationcode', ValidationCode),
+    (r'/api/subschool', SubSchool),
     (r".*", NotFound),
 ]

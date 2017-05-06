@@ -44,7 +44,6 @@ class PackageDetail(BaseHandler):
 
     @gen.coroutine
     def post(self):
-        self.schoolid = self.get_json_argument('schoolid', None)
         self.packageid = self.get_json_argument('packageid', None)
         reps = yield self.getdata()
         rep = {}
@@ -54,11 +53,10 @@ class PackageDetail(BaseHandler):
     @run_on_executor
     def getdata(self):
         result = self.DbRead.query(
-            self.Package.package_describe).filter(
+            self.Package.package_describe, self.Package.package_detail).filter(
             self.Package.package_state == 1,
-            self.Package.package_schooluid == self.schoolid,
-            self.Package.package_id == self.packageid).all()
-        rep = {self.packageid: result[0]}
+            self.Package.package_id == self.packageid).first()
+        rep = {'package': result.package_describe, 'money':result.package_detail}
         return rep
 
 
