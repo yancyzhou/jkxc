@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 from tornado.web import RequestHandler
-from Errorconfig import Errortypes,city_list,provincescode_name,provinceslist,city
+from Errorconfig import Errortypes
 from tornado import gen
 from tornado.escape import json_decode, json_encode, to_unicode
 from model import models

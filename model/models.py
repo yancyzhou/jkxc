@@ -77,8 +77,9 @@ class Trainer(Base):
     trainer_dic = Column(TEXT)
     trainer_years = Column(BIGINT(9))
 
-    def __init__(self, trainer_name=None, trainer_code=None, trainer_password=None,trainer_headpic=None, trainer_type=0, trainer_rank=0,
+    def __init__(self, trainer_id=None,trainer_name=None, trainer_code=None, trainer_password=None,trainer_headpic=None, trainer_type=0, trainer_rank=0,
                  trainer_state=0,trainer_schooluid=None, trainer_dic=None, trainer_years=0):
+        self.trainer_id = trainer_id
         self.trainer_name = trainer_name
         self.trainer_code = trainer_code
         self.trainer_password = trainer_password
@@ -106,15 +107,15 @@ class School(Base):
 
 class Courses(Base):
     __tablename__ = 'jkxc_courses'
-    courses_id = Column(BIGINT(11), primary_key=True)
+    courses_id = Column(BIGINT(11), primary_key=True,index=True)
     courses_traineruid = Column(BIGINT(11))
     courses_starttime = Column(DATETIME(25))
     courses_endtime = Column(DATETIME(25))
     courses_hour = Column(FLOAT(5))
     courses_type = Column(BIGINT(9))
     courses_state = Column(BIGINT(9))
-    courses_current_number = Column(BIGINT(9))
-    courses_limit_number = Column(BIGINT(9))
+    courses_current_number = Column(BIGINT(9),index=True)
+    courses_limit_number = Column(BIGINT(9),index=True)
     courses_epuid = Column(BIGINT(11))
     courses_createtime = Column(DATETIME(25))
 
@@ -190,17 +191,15 @@ class Package(Base):
     package_class_hour = Column(FLOAT(5))
     package_state = Column(BIGINT(9))
     package_schooluid = Column(BIGINT(11))
-    package_detail = Column(BIGINT(11))
 
     def __init__(self, package_money=0, package_name=None, package_describe=None, package_class_hour=0, package_state=0,
-                 package_schooluid=0, package_detail=None):
+                 package_schooluid=0):
         self.package_money = package_money
         self.package_name = package_name
         self.package_describe = package_describe
         self.package_class_hour = package_class_hour
         self.package_state = package_state
         self.package_schooluid = package_schooluid
-        self.package_detail = package_detail
 
 
 class Student_courses(Base):

@@ -13,8 +13,6 @@ from tornado.escape import json_decode,json_encode
 from sqlalchemy import func, extract, distinct
 from concurrent.futures import ThreadPoolExecutor
 from tornado.concurrent import run_on_executor
-from model.models import *
-import requests,base64,json
 
 #驾校套餐列表
 class PackageIndex(BaseHandler):
@@ -46,6 +44,7 @@ class PackageDetail(BaseHandler):
 
     @gen.coroutine
     def post(self):
+        self.schoolid = self.get_json_argument('schoolid', None)
         self.packageid = self.get_json_argument('packageid', None)
         reps = yield self.getdata()
         rep = {}
@@ -55,10 +54,11 @@ class PackageDetail(BaseHandler):
     @run_on_executor
     def getdata(self):
         result = self.DbRead.query(
-            self.Package.package_describe,self.Package.package_detail).filter(
+            self.Package.package_describe).filter(
             self.Package.package_state == 1,
-            self.Package.package_id == self.packageid).first()
-        rep = {'package': result.package_describe, 'money':result.package_detail}
+            self.Package.package_schooluid == self.schoolid,
+            self.Package.package_id == self.packageid).all()
+        rep = {self.packageid: result[0]}
         return rep
 
 
@@ -73,38 +73,29 @@ class StudentExamList(BaseHandler):
         reps = yield self.getdata()
         for item in reps:
             status = 0
-            for items in item['Periodoftime']:
-                selecttimeitem = item['day']+" "+items.split("~")[1]+":00"
-                if time.strptime(selecttimeitem, '%Y-%m-%d %H:%M:%S')<time.localtime(time.time()):
-                    status = 1
+            selecttimeitem = item['day'] + " " + item['Periodoftime'].split("~")[1] + ":00"
+            if time.strptime(selecttimeitem, '%Y-%m-%d %H:%M:%S') < time.localtime(time.time()):
+                status = 1
             item['status'] = status
-            item['Periodoftime'] = ",".join(item['Periodoftime'])
         rep = {}
-        reps = sorted(reps, key=lambda student: student['day'],reverse=True)
+        reps = sorted(reps, key=lambda student: student['day'], reverse=True)
         rep['data'] = reps
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
 
     @run_on_executor
     def getdata(self):
         result = self.DbRead.query(
-             self.Courses.courses_id, self.Courses.courses_starttime, self.Courses.courses_endtime,self.Student_courses.sc_createtime).filter(
+            self.Courses.courses_id, self.Courses.courses_starttime, self.Courses.courses_endtime,
+            self.Student_courses.sc_createtime).filter(
             self.Student_courses.sc_studentuid == self.studentid,
             self.Student_courses.sc_coursesuid == self.Courses.courses_id).all()
-        rep = {}
         courses_list = []
         for res in result:
             item = res.courses_starttime.strftime('%H:%M') + "~" + res.courses_endtime.strftime('%H:%M')
-
             datekey = res.courses_starttime.strftime('%Y-%m-%d')
-            if datekey in rep.keys():
-                rep[datekey].append(item)
-            else:
-                rep[datekey] = [item]
-            item_dict = {"createtime":res.sc_createtime.strftime('%Y-%m-%d %H:%M:%S'),"day":datekey}
-            if item_dict not in courses_list:
-                courses_list.append(item_dict)
-        for item in courses_list:
-            item['Periodoftime'] = rep[item['day']]
+            item_dict = {"createtime": res.sc_createtime.strftime('%Y-%m-%d %H:%M:%S'), "day": datekey}
+            item_dict['Periodoftime'] = item
+            courses_list.append(item_dict)
         self.DbRead.commit()
         self.DbRead.close()
         return courses_list
@@ -117,21 +108,38 @@ class SaveStudentExam(BaseHandler):
     def post(self, *args, **kwargs):
         self.Periodoftime = self.get_json_argument("Periodoftime",None)
         self.StudentOpenid = self.get_json_argument("StudentOpenid",None)
-        for item in list(self.Periodoftime):
-            try:
-                studentCourses = self.Student_courses(sc_coursesuid=item,sc_studentuid= self.StudentOpenid)
-                self.DbRead.add(studentCourses)
-                self.DbRead.commit()
-                self.DbRead.flush()
-                self.DbRead.close()
-            except Exception as e:
-                print e
-                self.DbRead.rollback()
-                continue
-        rep = {}
-        rep['data'] = self.Periodoftime
-        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+        Periodoftime = self.Periodoftime.split("&")
+        courses = self.DbRead.query(self.Courses.courses_current_number,self.Courses.courses_limit_number).filter(self.Courses.courses_id.in_(Periodoftime),self.Courses.courses_current_number<self.Courses.courses_limit_number).all()
 
+        if len(courses) == len(Periodoftime):
+            print courses[0]
+            # for item in courses:
+                # item.courses_current_number += 1
+            self.DbRead.commit()
+        # for items in Periodoftime:
+        #     try:
+        #         studentCourses = self.Student_courses(sc_coursesuid=items, sc_studentuid=self.StudentOpenid)
+        #         self.DbRead.add(studentCourses)
+        #         self.DbRead.commit()
+        #         self.DbRead.flush()
+        #         self.DbRead.close()
+        #     except Exception as e:
+        #         print e
+        #         self.DbRead.rollback()
+            rep = {}
+            rep['data'] = self.Periodoftime
+            self.writejson(json_decode(str(ApiHTTPError(**rep))))
+        else:
+            try:
+                print courses[0]
+                for item in courses:
+                    print item.courses_current_number
+                for items in courses:
+                    print items
+                self.DbRead.commit()
+            except Exception as e:
+                self.DbRead.commit()
+            self.writejson(json_decode(str(ApiHTTPError(30002))))
 
 #学员可报名列表
 class StudentExamindex(BaseHandler):
@@ -161,14 +169,18 @@ class StudentExamindex(BaseHandler):
             item = res.courses_starttime.strftime('%H:%M')+"~"+res.courses_endtime.strftime('%H:%M')
             disabled = False
             description = "预约中"
-            if res.courses_state == 1:
-                pass
-            elif res.courses_state == 3:
-                disabled = True
-                description = "预约已满"
-            elif res.courses_state ==2:
+            if res.courses_endtime<datetime.now():
                 disabled = True
                 description = "已关闭"
+            else:
+                if res.courses_state == 1:
+                    pass
+                elif res.courses_state == 3:
+                    disabled = True
+                    description = "预约已满"
+                elif res.courses_state ==2:
+                    disabled = True
+                    description = "已关闭"
             tmp = {"name":item,"CoursesId":res.courses_id,"checked":False,"count":res.courses_current_number,"disabled":disabled,"description":description}
             rep.append(tmp)
         return rep
@@ -199,27 +211,4 @@ class Studentoftrainer(BaseHandler):
         rep = {"trainer_name": result.trainer_name, "trainer_code": result.trainer_code,"trainer_headpic": result.trainer_headpic,
                "trainer_dic": result.trainer_dic, "trainer_years": result.trainer_years,
                "studentnum": result1.studentnum,"learntime": result2.learntime}
-        return rep
-
-
-#分校列表
-class SubSchool(BaseHandler):
-    executor = ThreadPoolExecutor(8)
-
-    @gen.coroutine
-    def post(self):
-        self.schoolid = self.get_json_argument('schoolid', None)
-        reps = yield self.getdata()
-        rep = {}
-        rep['data'] = reps
-        self.writejson(json_decode(str(ApiHTTPError(**rep))))
-
-    @run_on_executor
-    def getdata(self):
-        result = self.DbRead.query(
-            self.Exam_place.ep_name, self.Exam_place.ep_address).filter(
-            self.Exam_place.ep_schooluid == 1).all()
-        rep = []
-        for res in result:
-            rep.append([{'ep_name': res.ep_name, 'ep_address':res.ep_address}])
         return rep

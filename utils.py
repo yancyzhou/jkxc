@@ -10,10 +10,9 @@ Handlers = [
     (r'/api/studentcourseslist', StudentExamList),
     (r'/api/studentcoursesindex', StudentExamindex),
     (r'/api/SaveStudentExam', SaveStudentExam),
-    # (r'/api/GetUserinfo', GetUserinfo),
+    (r'/api/Studentoftrainer', Studentoftrainer),
+    (r'/api/GetUserinfo', GetUserinfo),
     (r'/api/SmsSender', SmsSenders),
     (r'/api/validationcode', ValidationCode),
-    (r'/api/studentoftrainer', Studentoftrainer),
-    (r'/api/subschool', SubSchool),
     (r".*", NotFound),
 ]
