@@ -1,11 +1,11 @@
 {
     "db": {
         "MySQLREAD": {
-        "Host": "58f8725d73a18.sh.cdb.myqcloud.com",
+        "Host": "10.66.218.15",
         "User": "service",
         "Passwd":   "service!@#",
         "Dbname":   "jkxc",
-        "Port": 5937,
+        "Port": 3306,
         "Charset":  "utf8"
         }
     }
