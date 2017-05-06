@@ -130,8 +130,6 @@ class SaveStudentExam(BaseHandler):
                 print e
                 self.DbRead.rollback()
                 continue
-        # print studentCourses.sc_id
-
         rep = {}
         rep['data'] = self.Periodoftime
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
