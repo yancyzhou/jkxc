@@ -46,7 +46,6 @@ class PackageDetail(BaseHandler):
 
     @gen.coroutine
     def post(self):
-        self.schoolid = self.get_json_argument('schoolid', None)
         self.packageid = self.get_json_argument('packageid', None)
         reps = yield self.getdata()
         rep = {}
@@ -56,11 +55,10 @@ class PackageDetail(BaseHandler):
     @run_on_executor
     def getdata(self):
         result = self.DbRead.query(
-            self.Package.package_describe).filter(
+            self.Package.package_describe,self.Package.package_detail).filter(
             self.Package.package_state == 1,
-            self.Package.package_schooluid == self.schoolid,
-            self.Package.package_id == self.packageid).all()
-        rep = {self.packageid: result[0]}
+            self.Package.package_id == self.packageid).first()
+        rep = {'package': result.package_describe, 'money':result.package_detail}
         return rep
 
 
@@ -134,6 +132,7 @@ class SaveStudentExam(BaseHandler):
         rep['data'] = self.Periodoftime
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
 
+
 #学员可报名列表
 class StudentExamindex(BaseHandler):
     executor = ThreadPoolExecutor(8)
@@ -172,4 +171,55 @@ class StudentExamindex(BaseHandler):
                 description = "已关闭"
             tmp = {"name":item,"CoursesId":res.courses_id,"checked":False,"count":res.courses_current_number,"disabled":disabled,"description":description}
             rep.append(tmp)
+        return rep
+
+
+#获取学员教练
+class Studentoftrainer(BaseHandler):
+    executor = ThreadPoolExecutor(8)
+
+    @gen.coroutine
+    def post(self):
+        self.studentid = self.get_json_argument('studentid', None)
+        reps = yield self.getdata()
+        rep = {}
+        rep['data'] = reps
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+    @run_on_executor
+    def getdata(self):
+        result = self.DbRead.query(self.Trainer.trainer_id, self.Trainer.trainer_name, self.Trainer.trainer_code, self.Trainer.trainer_dic, self.Trainer.trainer_years,self.Trainer.trainer_headpic).filter(
+            self.Student.student_wxcode == self.studentid).first()
+        result1 = self.DbRead.query(func.count(1).label("studentnum")).filter(
+            self.Student.student_traineruid == result.trainer_id).first()
+        result2 = self.DbRead.query(func.count(1).label("learntime")).filter(
+            self.Courses.courses_traineruid == result.trainer_id, self.Courses.courses_state != 4).first()
+        self.DbRead.commit()
+        self.DbRead.close()
+        rep = {"trainer_name": result.trainer_name, "trainer_code": result.trainer_code,"trainer_headpic": result.trainer_headpic,
+               "trainer_dic": result.trainer_dic, "trainer_years": result.trainer_years,
+               "studentnum": result1.studentnum,"learntime": result2.learntime}
+        return rep
+
+
+#分校列表
+class SubSchool(BaseHandler):
+    executor = ThreadPoolExecutor(8)
+
+    @gen.coroutine
+    def post(self):
+        self.schoolid = self.get_json_argument('schoolid', None)
+        reps = yield self.getdata()
+        rep = {}
+        rep['data'] = reps
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+    @run_on_executor
+    def getdata(self):
+        result = self.DbRead.query(
+            self.Exam_place.ep_name, self.Exam_place.ep_address).filter(
+            self.Exam_place.ep_schooluid == 1).all()
+        rep = []
+        for res in result:
+            rep.append([{'ep_name': res.ep_name, 'ep_address':res.ep_address}])
         return rep

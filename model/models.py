@@ -74,9 +74,11 @@ class Trainer(Base):
     trainer_rank = Column(BIGINT(9))
     trainer_state = Column(BIGINT(9))
     trainer_schooluid = Column(BIGINT(11))
+    trainer_dic = Column(TEXT)
+    trainer_years = Column(BIGINT(9))
 
     def __init__(self, trainer_name=None, trainer_code=None, trainer_password=None,trainer_headpic=None, trainer_type=0, trainer_rank=0,
-                 trainer_state=0,trainer_schooluid=None):
+                 trainer_state=0,trainer_schooluid=None, trainer_dic=None, trainer_years=0):
         self.trainer_name = trainer_name
         self.trainer_code = trainer_code
         self.trainer_password = trainer_password
@@ -85,6 +87,8 @@ class Trainer(Base):
         self.trainer_rank = trainer_rank
         self.trainer_state = trainer_state
         self.trainer_schooluid = trainer_schooluid
+        self.trainer_dic = trainer_dic
+        self.trainer_years = trainer_years
 
 
 class School(Base):
@@ -186,15 +190,17 @@ class Package(Base):
     package_class_hour = Column(FLOAT(5))
     package_state = Column(BIGINT(9))
     package_schooluid = Column(BIGINT(11))
+    package_detail = Column(BIGINT(11))
 
     def __init__(self, package_money=0, package_name=None, package_describe=None, package_class_hour=0, package_state=0,
-                 package_schooluid=0):
+                 package_schooluid=0, package_detail=None):
         self.package_money = package_money
         self.package_name = package_name
         self.package_describe = package_describe
         self.package_class_hour = package_class_hour
         self.package_state = package_state
         self.package_schooluid = package_schooluid
+        self.package_detail = package_detail
 
 
 class Student_courses(Base):
