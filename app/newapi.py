@@ -13,8 +13,6 @@ from tornado.escape import json_decode,json_encode
 from sqlalchemy import func, extract, distinct
 from concurrent.futures import ThreadPoolExecutor
 from tornado.concurrent import run_on_executor
-from model.models import *
-import requests,base64,json
 
 #驾校套餐列表
 class PackageIndex(BaseHandler):
@@ -74,9 +72,11 @@ class StudentExamList(BaseHandler):
         self.studentid = self.get_json_argument('studentid', None)
         reps = yield self.getdata()
         for item in reps:
+            print item
             status = 0
             for items in item['Periodoftime']:
                 selecttimeitem = item['day']+" "+items.split("~")[1]+":00"
+                print selecttimeitem
                 if time.strptime(selecttimeitem, '%Y-%m-%d %H:%M:%S')<time.localtime(time.time()):
                     status = 1
             item['status'] = status
@@ -119,7 +119,10 @@ class SaveStudentExam(BaseHandler):
     def post(self, *args, **kwargs):
         self.Periodoftime = self.get_json_argument("Periodoftime",None)
         self.StudentOpenid = self.get_json_argument("StudentOpenid",None)
-        for item in list(self.Periodoftime):
+        Periodoftime = list(self.Periodoftime)
+        courses = self.DbRead.query(self.Courses).filter(self.Courses.courses_id.in_(Periodoftime),self.Courses.courses_current_number<self.Courses.courses_limit_number).all()
+        print len(courses)
+        for item in Periodoftime:
             try:
                 studentCourses = self.Student_courses(sc_coursesuid=item,sc_studentuid= self.StudentOpenid)
                 self.DbRead.add(studentCourses)
@@ -161,6 +164,8 @@ class StudentExamindex(BaseHandler):
         for res in result:
             item = res.courses_starttime.strftime('%H:%M')+"~"+res.courses_endtime.strftime('%H:%M')
             disabled = False
+            if res.courses_endtime<datetime.now():
+                disabled = True
             description = "预约中"
             if res.courses_state == 1:
                 pass
