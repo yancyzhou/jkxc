@@ -187,19 +187,21 @@ class Package(Base):
     package_id = Column(BIGINT(11), primary_key=True)
     package_money = Column(FLOAT(10))
     package_name = Column(VARCHAR(50))
-    package_describe = Column(VARCHAR(255))
+    package_describe = Column(TEXT)
     package_class_hour = Column(FLOAT(5))
     package_state = Column(BIGINT(9))
     package_schooluid = Column(BIGINT(11))
+    package_detail = Column(TEXT)
 
     def __init__(self, package_money=0, package_name=None, package_describe=None, package_class_hour=0, package_state=0,
-                 package_schooluid=0):
+                 package_schooluid=0,package_detail=None):
         self.package_money = package_money
         self.package_name = package_name
         self.package_describe = package_describe
         self.package_class_hour = package_class_hour
         self.package_state = package_state
         self.package_schooluid = package_schooluid
+        self.package_detail = package_detail
 
 
 class Student_courses(Base):

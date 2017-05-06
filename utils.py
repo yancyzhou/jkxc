@@ -14,5 +14,6 @@ Handlers = [
     (r'/api/GetUserinfo', GetUserinfo),
     (r'/api/SmsSender', SmsSenders),
     (r'/api/validationcode', ValidationCode),
+    (r'/api/subschool', SubSchool),
     (r".*", NotFound),
 ]

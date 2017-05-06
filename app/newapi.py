@@ -44,7 +44,6 @@ class PackageDetail(BaseHandler):
 
     @gen.coroutine
     def post(self):
-        self.schoolid = self.get_json_argument('schoolid', None)
         self.packageid = self.get_json_argument('packageid', None)
         reps = yield self.getdata()
         rep = {}
@@ -54,11 +53,10 @@ class PackageDetail(BaseHandler):
     @run_on_executor
     def getdata(self):
         result = self.DbRead.query(
-            self.Package.package_describe).filter(
+            self.Package.package_describe, self.Package.package_detail).filter(
             self.Package.package_state == 1,
-            self.Package.package_schooluid == self.schoolid,
-            self.Package.package_id == self.packageid).all()
-        rep = {self.packageid: result[0]}
+            self.Package.package_id == self.packageid).first()
+        rep = {'package': result.package_describe, 'money':result.package_detail}
         return rep
 
 
@@ -110,7 +108,6 @@ class SaveStudentExam(BaseHandler):
         self.StudentOpenid = self.get_json_argument("StudentOpenid",None)
         Periodoftime = self.Periodoftime.split("&")
         courses = self.DbRead.query(self.Courses.courses_current_number,self.Courses.courses_limit_number).filter(self.Courses.courses_id.in_(Periodoftime),self.Courses.courses_current_number<self.Courses.courses_limit_number).all()
-
         if len(courses) == len(Periodoftime):
             print courses[0]
             # for item in courses:
@@ -134,8 +131,6 @@ class SaveStudentExam(BaseHandler):
                 print courses[0]
                 for item in courses:
                     print item.courses_current_number
-                for items in courses:
-                    print items
                 self.DbRead.commit()
             except Exception as e:
                 self.DbRead.commit()
@@ -211,4 +206,25 @@ class Studentoftrainer(BaseHandler):
         rep = {"trainer_name": result.trainer_name, "trainer_code": result.trainer_code,"trainer_headpic": result.trainer_headpic,
                "trainer_dic": result.trainer_dic, "trainer_years": result.trainer_years,
                "studentnum": result1.studentnum,"learntime": result2.learntime}
+        return rep
+
+    # 驾校场地列表
+class SubSchool(BaseHandler):
+    executor = ThreadPoolExecutor(8)
+    @gen.coroutine
+    def post(self):
+        self.school = self.get_json_argument('schoolid', None)
+        reps = yield self.getdata()
+        rep = {}
+        rep['data'] = reps
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+    @run_on_executor
+    def getdata(self):
+        result = self.DbRead.query(
+            self.Exam_place.ep_name,self.Exam_place.ep_address).filter(
+            self.Exam_place.ep_schooluid == self.school).all()
+        rep = []
+        for res in result:
+            rep.append({'name': res.ep_name, 'address': res.ep_address})
         return rep
