@@ -189,7 +189,7 @@ class Studentoftrainer(BaseHandler):
 
     @run_on_executor
     def getdata(self):
-        result = self.DbRead.query(self.Trainer.trainer_id, self.Trainer.trainer_name, self.Trainer.trainer_code, self.Trainer.trainer_dic, self.Trainer.trainer_years).filter(
+        result = self.DbRead.query(self.Trainer.trainer_id, self.Trainer.trainer_name, self.Trainer.trainer_code, self.Trainer.trainer_dic, self.Trainer.trainer_years,self.Trainer.trainer_headpic).filter(
             self.Student.student_wxcode == self.studentid).first()
         result1 = self.DbRead.query(func.count(1).label("studentnum")).filter(
             self.Student.student_traineruid == result.trainer_id).first()
@@ -197,7 +197,7 @@ class Studentoftrainer(BaseHandler):
             self.Courses.courses_traineruid == result.trainer_id, self.Courses.courses_state != 4).first()
         self.DbRead.commit()
         self.DbRead.close()
-        rep = {"trainer_name": result.trainer_name, "trainer_code": result.trainer_code,
+        rep = {"trainer_name": result.trainer_name, "trainer_code": result.trainer_code,"trainer_headpic": result.trainer_headpic,
                "trainer_dic": result.trainer_dic, "trainer_years": result.trainer_years,
                "studentnum": result1.studentnum,"learntime": result2.learntime}
         return rep
