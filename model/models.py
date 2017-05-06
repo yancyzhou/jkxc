@@ -107,7 +107,7 @@ class School(Base):
 
 class Courses(Base):
     __tablename__ = 'jkxc_courses'
-    courses_id = Column(BIGINT(11), primary_key=True)
+    courses_id = Column(BIGINT(11), primary_key=True,index=True)
     courses_traineruid = Column(BIGINT(11))
     courses_starttime = Column(DATETIME(25))
     courses_endtime = Column(DATETIME(25))
