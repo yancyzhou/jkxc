@@ -113,6 +113,7 @@ class SaveStudentExam(BaseHandler):
                 item.courses_current_number = tmp
             self.DbRead.commit()
             for items in Periodoftime:
+                print items
                 try:
                     studentCourses = self.Student_courses(sc_coursesuid=items, sc_studentuid=self.StudentOpenid)
                     self.DbRead.add(studentCourses)
