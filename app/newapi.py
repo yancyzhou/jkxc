@@ -36,7 +36,7 @@ class PackageIndex(BaseHandler):
         for index,res in enumerate(result):
             print index,res
             more_item = False
-            if index > 2:
+            if index > 1:
                 more_item = True
             item_dict = {"package_id":res.package_id,"package_name":res.package_name, "package_money":res.package_money,"more_item":more_item}
             rep.append(item_dict)
