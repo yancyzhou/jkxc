@@ -38,7 +38,8 @@ class PackageIndex(BaseHandler):
             more_item = False
             if index > 2:
                 more_item = True
-            rep[index] = {"package_id":res.package_id,"package_name":res.package_name, "package_money":res.package_money,"more_item":more_item}
+            item_dict = {"package_id":res.package_id,"package_name":res.package_name, "package_money":res.package_money,"more_item":more_item}
+            rep.append(item_dict)
         return rep
 
 
