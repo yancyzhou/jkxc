@@ -32,13 +32,13 @@ class PackageIndex(BaseHandler):
             self.Package.package_id, self.Package.package_name, self.Package.package_money).filter(
             self.Package.package_state == 1,
             self.Package.package_schooluid == self.schoolid,).all()
-        rep = {}
+        rep = []
         for index,res in enumerate(result):
             print index,res
             more_item = False
             if index > 2:
                 more_item = True
-            rep[res[0]] = {"package_name":res[1], "package_money":res[2],"more_item":more_item}
+            rep[index] = {"package_id":res.package_id,"package_name":res.package_name, "package_money":res.package_money,"more_item":more_item}
         return rep
 
 
