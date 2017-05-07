@@ -60,7 +60,7 @@ class PackageDetail(BaseHandler):
             self.Package.package_describe, self.Package.package_detail,self.Package.package_money).filter(
             self.Package.package_state == 1,
             self.Package.package_id == self.packageid).first()
-        rep = {'package': result.package_describe, 'money':result.package_money}
+        rep = {'package': result.package_describe, 'money':result.package_detail}
         return rep
 
 # 某一套餐name,price
