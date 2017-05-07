@@ -101,6 +101,7 @@ class SetOrder(BaseHandler):
         signstr = "appId=%s&nonceStr=%s&package=prepay_id=%s&signType=MD5&timeStamp=%s&key=%s" % (self.AppID,self.GetRandomStr,xml2obj['prepay_id'],timestramp,self.key)
         print signstr
         secondsign = self.set_md5(signstr)
+        print secondsign
         rep = {}
         rep['data'] = {"paysign":secondsign,"out_trade_no":self.id,"prepayid":xml2obj['prepay_id'],"nonceStr":self.GetRandomStr,"timestramp":timestramp}
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
