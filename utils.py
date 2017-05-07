@@ -16,5 +16,6 @@ Handlers = [
     (r'/api/SetOrder', SetOrder),
     (r'/api/validationcode', ValidationCode),
     (r'/api/subschool', SubSchool),
+    (r'/api/PayResult', PayResult),
     (r".*", NotFound),
 ]

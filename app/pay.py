@@ -39,7 +39,7 @@ class SetOrder(BaseHandler):
         out_trade_novalue = self.id
         total_feevalue = self.total_fee  # 价格
         spbill_create_ipvalue = "120.210.166.7"
-        notify_urlvalue = "https://jk.jikexueche.com"  # 用户回调URL地址
+        notify_urlvalue = "https://jk.jikexueche.com/api/PayResult"  # 用户回调URL地址
         trade_typevalue = "JSAPI"
         key = self.key  # 用户配置
 
@@ -102,3 +102,10 @@ class SetOrder(BaseHandler):
         rep = {}
         rep['data'] = {"paysign":secondsign,"out_trade_no":self.id,"prepayid":xml2obj['prepay_id'],"nonceStr":xml2obj['nonce_str'],"timestramp":timestramp}
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+
+class PayResult(BaseHandler):
+
+    def get(self, *args, **kwargs):
+        result = "<xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>"
+        self.write(result)
