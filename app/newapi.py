@@ -34,6 +34,7 @@ class PackageIndex(BaseHandler):
             self.Package.package_schooluid == self.schoolid,).all()
         rep = {}
         for index,res in enumerate(result):
+            print index,res
             more_item = False
             if index > 2:
                 more_item = True
