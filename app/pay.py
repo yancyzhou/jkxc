@@ -92,6 +92,7 @@ class SetOrder(BaseHandler):
         self.key = "jike712YMiinoo736Rexhu1217Nan909"
         result = self.Posts(self.XmlData())
         response =  result.decode('utf-8').encode(type)
+        print response
         xml2obj = {}
         root = ET.fromstring(response)
         for child_list in root.findall("*"):
