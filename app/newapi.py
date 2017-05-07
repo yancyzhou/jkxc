@@ -34,10 +34,9 @@ class PackageIndex(BaseHandler):
             self.Package.package_schooluid == self.schoolid,).all()
         rep = []
         for index,res in enumerate(result):
-            print index,res
-            more_item = False
+            more_item = True
             if index > 1:
-                more_item = True
+                more_item = False
             item_dict = {"package_id":res.package_id,"package_name":res.package_name, "package_money":res.package_money,"more_item":more_item}
             rep.append(item_dict)
         return rep
