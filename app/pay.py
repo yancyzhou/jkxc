@@ -18,41 +18,42 @@ from tornado import gen
 from tornado.escape import json_decode
 from concurrent.futures import ThreadPoolExecutor
 from tornado.concurrent import run_on_executor
-import urllib, urllib2, requests, random, hashlib, sys
+import urllib2, random, hashlib, sys
 
 
 class SetOrder(BaseHandler):
-    def XmlData(self,id):
-        appidvalue = "wxad81631247e48b3e"  # appid
-        attachvalue = "PayTest"
+    def set_md5(self,string):
+        mobj = hashlib.md5()
+        mobj.update(string)
+        signvalue = mobj.hexdigest()
+        signvalue = signvalue.upper()
+        return signvalue
+
+    def XmlData(self):
+        openidvalue = self.openid
+        appidvalue = self.AppID  # appid
+        attachvalue = self.attachvalue
         mch_idvalue = "1467218302"  # mch_id
         nonce_strvalue = self.GetRandomStr
         bodyvalue = "NATIVE"
-        out_trade_novalue = id
-        total_feevalue = "1"  # 价格
-        spbill_create_ipvalue = "36.5.160.59"
-        notify_urlvalue = "http://www.weixin.qq.com/wxpay/pay.php"  # 用户回调URL地址
-        trade_typevalue = "NATIVE"
-        product_idvalue = "12235413214070356458058"
-        key = ""  # 用户配置
+        out_trade_novalue = self.id
+        total_feevalue = self.total_fee  # 价格
+        spbill_create_ipvalue = "120.210.166.7"
+        notify_urlvalue = "https://jk.jikexueche.com"  # 用户回调URL地址
+        trade_typevalue = "JSAPI"
+        key = self.key  # 用户配置
 
-        formatstr = 'appid=%s&attach=%s&body=%s&mch_id=%s&nonce_str=%s&notify_url=%s&out_trade_no=%s&product_id=%s' \
-                    '&spbill_create_ip=%s&total_fee=%s&trade_type=%s&key=%s' % (
-                    appidvalue, attachvalue, bodyvalue, mch_idvalue, nonce_strvalue, \
-                    notify_urlvalue, out_trade_novalue, product_idvalue, spbill_create_ipvalue, total_feevalue,
+        formatstr = 'appid=%s&attach=%s&body=%s&mch_id=%s&nonce_str=%s&notify_url=%s&openid=%s&out_trade_no=%s&spbill_create_ip=%s&total_fee=%s&trade_type=%s&key=%s' % (
+                    appidvalue, attachvalue,bodyvalue,mch_idvalue,nonce_strvalue,notify_urlvalue,openidvalue,out_trade_novalue, spbill_create_ipvalue, total_feevalue,
                     trade_typevalue, key)
 
-        print formatstr
-        mobj = hashlib.md5()
-        mobj.update(formatstr)
-        signvalue = mobj.hexdigest()
-        signvalue = signvalue.upper()
-        print signvalue
+        signvalue = self.set_md5(formatstr)
 
         xmlstart = "<xml>\r\n"
         appid = "<appid>" + appidvalue + "</appid>\r\n"
         attach = "<attach>" + attachvalue + "</attach>\r\n"
         mch_id = "<mch_id>" + mch_idvalue + "</mch_id>\r\n"
+        openid = "<openid>" + openidvalue + "</openid>\r\n"
         nonce_str = "<nonce_str>" + nonce_strvalue + "</nonce_str>\r\n"
         body = "<body>" + bodyvalue + "</body>\r\n"
         out_trade_no = "<out_trade_no>" + out_trade_novalue + "</out_trade_no>\r\n"
@@ -60,11 +61,10 @@ class SetOrder(BaseHandler):
         spbill_create_ip = "<spbill_create_ip>" + spbill_create_ipvalue + "</spbill_create_ip>\r\n"
         notify_url = "<notify_url>" + notify_urlvalue + "</notify_url>\r\n"
         trade_type = "<trade_type>" + trade_typevalue + "</trade_type>\r\n"
-        product_id = "<product_id>" + product_idvalue + "</product_id>\r\n"
         sign = "<sign>" + signvalue + "</sign>\r\n"
         xmlend = "</xml>"
-        result = xmlstart + appid + attach + mch_id + nonce_str + body + out_trade_no + total_fee + spbill_create_ip + notify_url + trade_type + product_id + sign + xmlend
-        print result
+
+        result = xmlstart + appid + attach+body+mch_id+nonce_str+notify_url+openid+out_trade_no+spbill_create_ip+total_fee+trade_type+sign+ xmlend
         return result
 
 
@@ -78,6 +78,27 @@ class SetOrder(BaseHandler):
 
 
     def post(self, *args, **kwargs):
+        try:
+            import xml.etree.cElementTree as ET
+        except ImportError:
+            import xml.etree.ElementTree as ET
+        import time
         type = sys.getfilesystemencoding()
-        result = self.Posts(self.XmlData("123511654189415"))
-        print result.decode('utf-8').encode(type)
+        self.AppID = "wxad81631247e48b3e"
+        self.id  = "JIKEXUECHE"+str(time.time()).replace(".","")+str(random.randint(10,100))
+        self.attachvalue = "JKXC"
+        self.total_fee = "1"
+        self.openid = "orIf80Cg6Lp8jk7iR55x6GH-5Z5A"
+        self.key = "jike712YMiinoo736Rexhu1217Nan909"
+        result = self.Posts(self.XmlData())
+        response =  result.decode('utf-8').encode(type)
+        xml2obj = {}
+        root = ET.fromstring(response)
+        for child_list in root.findall("*"):
+            xml2obj[child_list.tag]=child_list.text
+        timestramp = str(time.time()).replace(".","")
+        signstr = "appId=%s&nonceStr=%s&package=prepay_id=%s&signType=MD5&timeStamp=%s&key=%s" % (self.AppID,self.GetRandomStr,xml2obj['prepay_id'],timestramp,self.key)
+        secondsign = self.set_md5(signstr)
+        rep = {}
+        rep['data'] = {"paysign":secondsign,"out_trade_no":self.id,"prepayid":xml2obj['prepay_id'],"nonceStr":self.GetRandomStr,"timestramp":timestramp}
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
