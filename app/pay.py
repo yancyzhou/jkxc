@@ -88,20 +88,17 @@ class SetOrder(BaseHandler):
         self.id  = "JIKEXUECHE"+str(time.time()).replace(".","")+str(random.randint(10,100))
         self.attachvalue = "JKXC"
         self.total_fee = "1"
-        self.openid = "orIf80Cg6Lp8jk7iR55x6GH-5Z5A"
+        self.openid = self.get_json_argument("openid",None)
         self.key = "jike712YMiinoo736Rexhu1217Nan909"
         result = self.Posts(self.XmlData())
         response =  result.decode('utf-8').encode(type)
-        print response
         xml2obj = {}
         root = ET.fromstring(response)
         for child_list in root.findall("*"):
             xml2obj[child_list.tag]=child_list.text
         timestramp = str(time.time()).replace(".","")
         signstr = "appId=%s&nonceStr=%s&package=prepay_id=%s&signType=MD5&timeStamp=%s&key=%s" % (self.AppID,xml2obj['nonce_str'],xml2obj['prepay_id'],timestramp,self.key)
-        print signstr
         secondsign = self.set_md5(signstr)
-        print secondsign
         rep = {}
         rep['data'] = {"paysign":secondsign,"out_trade_no":self.id,"prepayid":xml2obj['prepay_id'],"nonceStr":xml2obj['nonce_str'],"timestramp":timestramp}
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
