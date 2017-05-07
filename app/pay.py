@@ -16,8 +16,6 @@
 from Handler import BaseHandler, ApiHTTPError
 from tornado import gen
 from tornado.escape import json_decode
-from concurrent.futures import ThreadPoolExecutor
-from tornado.concurrent import run_on_executor
 import urllib2, random, hashlib, sys
 
 

@@ -110,10 +110,12 @@ class SaveStudentExam(BaseHandler):
         if len(courses) == len(Periodoftime):
             for item in courses:
                 tmp = item.courses_current_number+1
+
                 item.courses_current_number = tmp
+                if tmp==item.courses_limit_number:
+                    item.courses_state=3
             self.DbRead.commit()
             for items in Periodoftime:
-                print items
                 try:
                     studentCourses = self.Student_courses(sc_coursesuid=items, sc_studentuid=self.StudentOpenid)
                     self.DbRead.add(studentCourses)
