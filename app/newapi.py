@@ -33,8 +33,11 @@ class PackageIndex(BaseHandler):
             self.Package.package_state == 1,
             self.Package.package_schooluid == self.schoolid,).all()
         rep = {}
-        for res in result:
-            rep[res[0]] = {"package_name":res[1], "package_money":res[2]}
+        for index,res in enumerate(result):
+            more_item = False
+            if index > 2:
+                more_item = True
+            rep[res[0]] = {"package_name":res[1], "package_money":res[2],"more_item":more_item}
         return rep
 
 
@@ -121,7 +124,6 @@ class SaveStudentExam(BaseHandler):
                     self.DbRead.add(studentCourses)
                     self.DbRead.commit()
                 except Exception as e:
-                    print e
                     self.DbRead.rollback()
             rep = {}
             rep['data'] = self.Periodoftime
