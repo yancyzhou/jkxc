@@ -57,10 +57,30 @@ class PackageDetail(BaseHandler):
     @run_on_executor
     def getdata(self):
         result = self.DbRead.query(
-            self.Package.package_describe, self.Package.package_detail).filter(
+            self.Package.package_describe, self.Package.package_detail,self.Package.package_money).filter(
             self.Package.package_state == 1,
             self.Package.package_id == self.packageid).first()
-        rep = {'package': result.package_describe, 'money':result.package_detail}
+        rep = {'package': result.package_describe, 'money':result.package_money}
+        return rep
+
+# 某一套餐name,price
+class PackageDetail_2(BaseHandler):
+    executor = ThreadPoolExecutor(8)
+
+    @gen.coroutine
+    def post(self):
+        self.packageid = self.get_json_argument('packageid', None)
+        reps = yield self.getdata()
+        rep = {}
+        rep['data'] = reps
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+    @run_on_executor
+    def getdata(self):
+        result = self.DbRead.query(self.Package.package_name,self.Package.package_schooluid,self.Package.package_money).filter(
+            self.Package.package_state == 1,
+            self.Package.package_id == self.packageid).first()
+        rep = {'schooluid': result.package_schooluid, 'name':result.package_name,'price': result.package_money}
         return rep
 
 #学员历史学习记录
