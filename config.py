@@ -30,4 +30,4 @@ EngineRead = create_engine('mysql://%s:%s@%s:%d/%s?charset=utf8' %
                        (DBClients.db.MySQLREAD.User, DBClients.db.MySQLREAD.Passwd,
                         DBClients.db.MySQLREAD.Host,DBClients.db.MySQLREAD.Port, DBClients.db.MySQLREAD.Dbname),
                        encoding='utf8', echo=False,
-                       pool_size=100, pool_recycle=10)
+                       pool_size=100, pool_recycle=3600)
