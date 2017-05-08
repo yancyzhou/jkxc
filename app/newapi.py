@@ -134,7 +134,7 @@ class SaveStudentExam(BaseHandler):
         if len(courses) == len(Periodoftime):
             for item in courses:
                 verify = self.DbRead.query(self.Student_courses.sc_id).filter(self.Student_courses.sc_coursesuid==item.courses_id,self.Student_courses.sc_studentuid==self.StudentOpenid).first()
-                if verify is not None:
+                if verify is None:
                     tmp = item.courses_current_number+1
                     item.courses_current_number = tmp
                     if tmp==item.courses_limit_number:
