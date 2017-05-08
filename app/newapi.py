@@ -179,19 +179,19 @@ class StudentExamindex(BaseHandler):
         rep = []
         for res in result:
             item = res.courses_starttime.strftime('%H:%M')+"~"+res.courses_endtime.strftime('%H:%M')
-            disabled = 'false'
+            disabled = False
             description = "预约中"
             if res.courses_endtime<datetime.now():
-                disabled = 'true'
+                disabled = True
                 description = "已关闭"
             else:
                 if res.courses_state == 1:
                     pass
                 elif res.courses_state == 3:
-                    disabled = 'true'
+                    disabled = True
                     description = "预约已满"
                 elif res.courses_state ==2:
-                    disabled = 'true'
+                    disabled = True
                     description = "已关闭"
             tmp = {"name":item,"CoursesId":res.courses_id,"checked":False,"count":res.courses_current_number,"disabled":disabled,"description":description}
             rep.append(tmp)
