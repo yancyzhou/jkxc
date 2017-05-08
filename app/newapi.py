@@ -133,7 +133,7 @@ class SaveStudentExam(BaseHandler):
         courses = self.DbRead.query(self.Courses).filter(self.Courses.courses_id.in_(Periodoftime),self.Courses.courses_current_number<self.Courses.courses_limit_number).with_lockmode("update").all()
         if len(courses) == len(Periodoftime):
             for item in courses:
-                verify = self.DbRead.query(self.Student_courses.sc_id).filter(self.Student_courses.sc_coursesuid==item.courses_id,self.Student_courses.sc_studentuid==self.StudentOpenid).get(1)
+                verify = self.DbRead.query(self.Student_courses.sc_id).filter(self.Student_courses.sc_coursesuid==item.courses_id,self.Student_courses.sc_studentuid==self.StudentOpenid).first()
                 if len(verify):
                     tmp = item.courses_current_number+1
                     item.courses_current_number = tmp
