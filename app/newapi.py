@@ -29,7 +29,7 @@ class PackageIndex(BaseHandler):
     @run_on_executor
     def getdata(self):
         result = self.DbRead.query(
-            self.Package.package_id, self.Package.package_name, self.Package.package_money).filter(
+            self.Package.package_id, self.Package.package_name, self.Package.package_money,self.Package.package_pic).filter(
             self.Package.package_state == 1,
             self.Package.package_schooluid == self.schoolid,).all()
         self.DbRead.close()
@@ -38,7 +38,7 @@ class PackageIndex(BaseHandler):
             more_item = True
             if index > 1:
                 more_item = False
-            item_dict = {"package_id":res.package_id,"package_name":res.package_name, "package_money":res.package_money,"more_item":more_item}
+            item_dict = {"package_id":res.package_id,"package_name":res.package_name, "package_money":res.package_money,"more_item":more_item,"package_pic":res.package_pic}
             rep.append(item_dict)
         return rep
 
