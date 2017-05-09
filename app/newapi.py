@@ -220,8 +220,12 @@ class Studentoftrainer(BaseHandler):
     def getdata(self):
         result = self.DbRead.query(self.Trainer.trainer_id, self.Trainer.trainer_name, self.Trainer.trainer_code, self.Trainer.trainer_dic, self.Trainer.trainer_years,self.Trainer.trainer_headpic).filter(
             self.Student.student_wxcode == self.studentid).first()
+        self.DbRead.commit()
+        self.DbRead.close()
         result1 = self.DbRead.query(func.count(1).label("studentnum")).filter(
             self.Student.student_traineruid == result.trainer_id).first()
+        self.DbRead.commit()
+        self.DbRead.close()
         result2 = self.DbRead.query(func.count(1).label("learntime")).filter(
             self.Courses.courses_traineruid == result.trainer_id, self.Courses.courses_state != 4).first()
         self.DbRead.commit()
