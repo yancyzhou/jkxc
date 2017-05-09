@@ -32,6 +32,7 @@ class PackageIndex(BaseHandler):
             self.Package.package_id, self.Package.package_name, self.Package.package_money).filter(
             self.Package.package_state == 1,
             self.Package.package_schooluid == self.schoolid,).all()
+        self.DbRead.close()
         rep = []
         for index,res in enumerate(result):
             more_item = True
@@ -60,6 +61,7 @@ class PackageDetail(BaseHandler):
             self.Package.package_describe, self.Package.package_detail,self.Package.package_money).filter(
             self.Package.package_state == 1,
             self.Package.package_id == self.packageid).first()
+        self.DbRead.close()
         rep = {'package': result.package_describe, 'money':result.package_detail}
         return rep
 
@@ -80,6 +82,7 @@ class PackageDetail_2(BaseHandler):
         result = self.DbRead.query(self.Package.package_name,self.Package.package_schooluid,self.Package.package_money).filter(
             self.Package.package_state == 1,
             self.Package.package_id == self.packageid).first()
+        self.DbRead.close()
         rep = {'schooluid': result.package_schooluid, 'name':result.package_name,'price': result.package_money}
         return rep
 
@@ -145,6 +148,7 @@ class SaveStudentExam(BaseHandler):
                     studentCourses = self.Student_courses(sc_coursesuid=items, sc_studentuid=self.StudentOpenid)
                     self.DbRead.add(studentCourses)
                     self.DbRead.commit()
+                    self.DbRead.close()
                 except Exception as e:
                     self.DbRead.rollback()
             rep = {}
@@ -152,6 +156,7 @@ class SaveStudentExam(BaseHandler):
             self.writejson(json_decode(str(ApiHTTPError(**rep))))
         else:
             self.DbRead.commit()
+            self.DbRead.close()
             self.writejson(json_decode(str(ApiHTTPError(30002))))
 
 #学员可报名列表
@@ -245,4 +250,5 @@ class SubSchool(BaseHandler):
         rep = []
         for res in result:
             rep.append({'name': res.ep_name, 'address': res.ep_address})
+        self.DbRead.close()
         return rep
