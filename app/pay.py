@@ -37,17 +37,14 @@ class SetOrder(BaseHandler):
         mch_idvalue = "1467218302"  # mch_id
         nonce_strvalue = self.GetRandomStr
         bodyvalue = self.body.encode('utf-8')
-        print bodyvalue
         out_trade_novalue = self.id
         total_feevalue = self.total_fee  # 价格
-        print total_feevalue
         spbill_create_ipvalue = "120.210.166.7"
         notify_urlvalue = "https://jk.jikexueche.com/api/PayResult"  # 用户回调URL地址
         trade_typevalue = "JSAPI"
         key = self.key  # 用户配置
 
         formatstr = 'appid=%s&attach=%s&mch_id=%s&nonce_str=%s&notify_url=%s&openid=%s&out_trade_no=%s&spbill_create_ip=%s&total_fee=%s&trade_type=%s&key=%s' % (appidvalue, attachvalue,mch_idvalue,nonce_strvalue,notify_urlvalue,openidvalue,out_trade_novalue, spbill_create_ipvalue, total_feevalue,trade_typevalue, key)
-        print formatstr
         signvalue = self.set_md5(formatstr)
 
         xmlstart = "<xml>\r\n"
