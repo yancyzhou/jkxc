@@ -27,6 +27,9 @@ class SetOrder(BaseHandler):
         return signvalue
 
     def XmlData(self):
+        reload(sys)
+
+        sys.setdefaultencoding('utf8')
         type = sys.getfilesystemencoding()
         openidvalue = self.openid
         appidvalue = self.AppID  # appid
@@ -61,8 +64,8 @@ class SetOrder(BaseHandler):
         trade_type = "<trade_type>" + trade_typevalue + "</trade_type>\r\n"
         sign = "<sign>" + signvalue + "</sign>\r\n"
         xmlend = "</xml>"
-        print body.decode().encode('utf-8')
-        result = xmlstart + appid + attach+body.decode('utf-8').encode(type)+mch_id+nonce_str+notify_url+openid+out_trade_no+spbill_create_ip+total_fee+trade_type+sign+ xmlend
+        print body
+        result = xmlstart + appid + attach+body+mch_id+nonce_str+notify_url+openid+out_trade_no+spbill_create_ip+total_fee+trade_type+sign+ xmlend
         return result
 
 
