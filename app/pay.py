@@ -33,7 +33,7 @@ class SetOrder(BaseHandler):
         attachvalue = self.attachvalue
         mch_idvalue = "1467218302"  # mch_id
         nonce_strvalue = self.GetRandomStr
-        bodyvalue = self.body
+        bodyvalue = self.body.encode('utf-8')
         out_trade_novalue = self.id
         total_feevalue = self.total_fee  # 价格
         spbill_create_ipvalue = "120.210.166.7"
