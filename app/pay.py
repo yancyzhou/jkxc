@@ -27,6 +27,7 @@ class SetOrder(BaseHandler):
         return signvalue
 
     def XmlData(self):
+        type = sys.getfilesystemencoding()
         openidvalue = self.openid
         appidvalue = self.AppID  # appid
         attachvalue = self.attachvalue
