@@ -32,7 +32,7 @@ class SetOrder(BaseHandler):
         attachvalue = self.attachvalue
         mch_idvalue = "1467218302"  # mch_id
         nonce_strvalue = self.GetRandomStr
-        bodyvalue = self.body.decode('utf-8')
+        bodyvalue = "即刻学车"
         print bodyvalue
         out_trade_novalue = self.id
         total_feevalue = self.total_fee  # 价格
