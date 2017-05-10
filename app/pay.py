@@ -87,7 +87,9 @@ class SetOrder(BaseHandler):
         self.total_fee = self.get_json_argument("total_fee",1000)
         self.openid = self.get_json_argument("openid",None)
         self.key = "jike712YMiinoo736Rexhu1217Nan909"
-        result = self.Posts(self.XmlData())
+        data = self.XmlData()
+        print data
+        result = self.Posts(data)
         print result
         response =  result
         xml2obj = {}
