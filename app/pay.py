@@ -19,8 +19,6 @@ import urllib2, random, hashlib,sys
 
 
 class SetOrder(BaseHandler):
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
     def set_md5(self,string):
         mobj = hashlib.md5()
         mobj.update(string)
