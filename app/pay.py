@@ -20,7 +20,7 @@ import urllib2, random, hashlib,sys
 
 class SetOrder(BaseHandler):
     reload(sys)
-    sys.setdefaultencoding('utf8')
+    sys.setdefaultencoding('utf-8')
     def set_md5(self,string):
         mobj = hashlib.md5()
         mobj.update(string)
@@ -34,7 +34,7 @@ class SetOrder(BaseHandler):
         attachvalue = self.attachvalue
         mch_idvalue = "1467218302"  # mch_id
         nonce_strvalue = self.GetRandomStr
-        bodyvalue = self.body
+        bodyvalue = self.body.decode('utf-8')
         print bodyvalue
         out_trade_novalue = self.id
         total_feevalue = self.total_fee  # 价格
