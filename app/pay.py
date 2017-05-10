@@ -86,7 +86,7 @@ class SetOrder(BaseHandler):
         self.id  = "JIKEXUECHE"+str(time.time()).replace(".","")+str(random.randint(10,100))
         self.attachvalue = "JKXC"
         self.body = self.get_json_argument("body",None)
-        print self.body
+        print self.body.decode('utf-8').encode(type)
         self.total_fee = self.get_json_argument("total_fee",1000)
         self.openid = self.get_json_argument("openid",None)
         self.key = "jike712YMiinoo736Rexhu1217Nan909"
