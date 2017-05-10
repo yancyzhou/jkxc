@@ -254,8 +254,8 @@ class SubSchool(BaseHandler):
         rep = []
         for index,res in enumerate(result):
             if index==0:
-                rep.append({'value':res.ep_id,'checked':True,'name': res.ep_name, 'address': res.ep_address})
+                rep.append({'value':res.ep_id,'checked':True,'name': res.ep_name, 'description': res.ep_address})
             else:
-                rep.append({'value':res.ep_id,'checked':False,'name': res.ep_name, 'address': res.ep_address})
+                rep.append({'value':res.ep_id,'checked':False,'name': res.ep_name, 'description': res.ep_address})
         self.DbRead.close()
         return rep
