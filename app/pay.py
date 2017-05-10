@@ -88,6 +88,7 @@ class SetOrder(BaseHandler):
         self.openid = self.get_json_argument("openid",None)
         self.key = "jike712YMiinoo736Rexhu1217Nan909"
         result = self.Posts(self.XmlData())
+        print result
         response =  result
         xml2obj = {}
         root = ET.fromstring(response)
