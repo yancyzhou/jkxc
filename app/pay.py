@@ -15,8 +15,10 @@
 from Handler import BaseHandler, ApiHTTPError
 from tornado import gen
 from tornado.escape import json_decode
-import urllib2, random, hashlib, sys
-
+import urllib2, random, hashlib
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 class SetOrder(BaseHandler):
     def set_md5(self,string):
