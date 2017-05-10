@@ -64,7 +64,7 @@ class SetOrder(BaseHandler):
         xmlend = "</xml>"
         print body
         result = xmlstart + appid + attach+body+mch_id+nonce_str+notify_url+openid+out_trade_no+spbill_create_ip+total_fee+trade_type+sign+ xmlend
-        return result
+        return result.encode('utf-8')
 
 
     def Posts(self,data):
