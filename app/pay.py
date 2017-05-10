@@ -53,7 +53,7 @@ class SetOrder(BaseHandler):
         mch_id = "<mch_id>" + mch_idvalue + "</mch_id>\r\n"
         openid = "<openid>" + openidvalue + "</openid>\r\n"
         nonce_str = "<nonce_str>" + nonce_strvalue + "</nonce_str>\r\n"
-        body = "<body>" + bodyvalue.encode('utf-8') + "</body>\r\n"
+        body = "<body>" + bodyvalue.decode('utf-8').encode(type) + "</body>\r\n"
         out_trade_no = "<out_trade_no>" + out_trade_novalue + "</out_trade_no>\r\n"
         total_fee = "<total_fee>" + total_feevalue + "</total_fee>\r\n"
         spbill_create_ip = "<spbill_create_ip>" + spbill_create_ipvalue + "</spbill_create_ip>\r\n"
