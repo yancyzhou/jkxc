@@ -36,7 +36,7 @@ class SetOrder(BaseHandler):
         nonce_strvalue = self.GetRandomStr
         bodyvalue = self.body.encode('utf-8')
         out_trade_novalue = self.id
-        total_feevalue = self.total_fee  # 价格
+        total_feevalue = '1'#self.total_fee  # 价格
         spbill_create_ipvalue = "120.210.166.7"
         notify_urlvalue = "https://jk.jikexueche.com/api/PayResult"  # 用户回调URL地址
         trade_typevalue = "JSAPI"
@@ -59,7 +59,6 @@ class SetOrder(BaseHandler):
         trade_type = "<trade_type>" + trade_typevalue + "</trade_type>\r\n"
         sign = "<sign>" + signvalue + "</sign>\r\n"
         xmlend = "</xml>"
-        print body
         result = xmlstart + appid + attach+body+mch_id+nonce_str+notify_url+openid+out_trade_no+spbill_create_ip+total_fee+trade_type+sign+ xmlend
         return result.encode('utf-8')
 
@@ -88,9 +87,7 @@ class SetOrder(BaseHandler):
         self.openid = self.get_json_argument("openid",None)
         self.key = "jike712YMiinoo736Rexhu1217Nan909"
         data = self.XmlData()
-        print data
         result = self.Posts(data)
-        print result
         response =  result
         xml2obj = {}
         root = ET.fromstring(response)
