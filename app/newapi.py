@@ -252,7 +252,10 @@ class SubSchool(BaseHandler):
             self.Exam_place.ep_name,self.Exam_place.ep_address).filter(
             self.Exam_place.ep_schooluid == self.school).all()
         rep = []
-        for res in result:
-            rep.append({'name': res.ep_name, 'address': res.ep_address})
+        for index,res in enumerate(result):
+            if index==0:
+                rep.append({'checked':True,'name': res.ep_name, 'address': res.ep_address})
+            else:
+                rep.append({'checked':False,'name': res.ep_name, 'address': res.ep_address})
         self.DbRead.close()
         return rep
