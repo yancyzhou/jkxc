@@ -61,7 +61,7 @@ class SetOrder(BaseHandler):
         trade_type = "<trade_type>" + trade_typevalue + "</trade_type>\r\n"
         sign = "<sign>" + signvalue + "</sign>\r\n"
         xmlend = "</xml>"
-
+        print body
         result = xmlstart + appid + attach+body+mch_id+nonce_str+notify_url+openid+out_trade_no+spbill_create_ip+total_fee+trade_type+sign+ xmlend
         return result
 
