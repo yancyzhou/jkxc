@@ -36,6 +36,7 @@ class SetOrder(BaseHandler):
         print bodyvalue
         out_trade_novalue = self.id
         total_feevalue = self.total_fee  # 价格
+        print total_feevalue
         spbill_create_ipvalue = "120.210.166.7"
         notify_urlvalue = "https://jk.jikexueche.com/api/PayResult"  # 用户回调URL地址
         trade_typevalue = "JSAPI"
@@ -55,7 +56,7 @@ class SetOrder(BaseHandler):
         nonce_str = "<nonce_str>" + nonce_strvalue + "</nonce_str>\r\n"
         body = "<body>" + bodyvalue + "</body>\r\n"
         out_trade_no = "<out_trade_no>" + out_trade_novalue + "</out_trade_no>\r\n"
-        total_fee = "<total_fee>" + total_feevalue + "</total_fee>\r\n"
+        total_fee = "<total_fee>" + str(total_feevalue) + "</total_fee>\r\n"
         spbill_create_ip = "<spbill_create_ip>" + spbill_create_ipvalue + "</spbill_create_ip>\r\n"
         notify_url = "<notify_url>" + notify_urlvalue + "</notify_url>\r\n"
         trade_type = "<trade_type>" + trade_typevalue + "</trade_type>\r\n"
