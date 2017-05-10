@@ -15,12 +15,12 @@
 from Handler import BaseHandler, ApiHTTPError
 from tornado import gen
 from tornado.escape import json_decode
-import urllib2, random, hashlib
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+import urllib2, random, hashlib,sys
+
 
 class SetOrder(BaseHandler):
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     def set_md5(self,string):
         mobj = hashlib.md5()
         mobj.update(string)
@@ -34,7 +34,7 @@ class SetOrder(BaseHandler):
         attachvalue = self.attachvalue
         mch_idvalue = "1467218302"  # mch_id
         nonce_strvalue = self.GetRandomStr
-        bodyvalue = "即刻学车"
+        bodyvalue = self.body
         print bodyvalue
         out_trade_novalue = self.id
         total_feevalue = self.total_fee  # 价格
@@ -44,8 +44,8 @@ class SetOrder(BaseHandler):
         trade_typevalue = "JSAPI"
         key = self.key  # 用户配置
 
-        formatstr = 'appid=%s&attach=%s&mch_id=%s&nonce_str=%s&notify_url=%s&openid=%s&out_trade_no=%s&spbill_create_ip=%s&total_fee=%s&trade_type=%s&key=%s' % (
-                    appidvalue, attachvalue,mch_idvalue,nonce_strvalue,notify_urlvalue,openidvalue,out_trade_novalue, spbill_create_ipvalue, total_feevalue,
+        formatstr = 'appid=%s&attach=%s&mch_id=%s&body=%s&nonce_str=%s&notify_url=%s&openid=%s&out_trade_no=%s&spbill_create_ip=%s&total_fee=%s&trade_type=%s&key=%s' % (
+                    appidvalue, attachvalue,mch_idvalue,bodyvalue,nonce_strvalue,notify_urlvalue,openidvalue,out_trade_novalue, spbill_create_ipvalue, total_feevalue,
                     trade_typevalue, key)
         print formatstr
         signvalue = self.set_md5(formatstr)
@@ -93,7 +93,7 @@ class SetOrder(BaseHandler):
         self.openid = self.get_json_argument("openid",None)
         self.key = "jike712YMiinoo736Rexhu1217Nan909"
         result = self.Posts(self.XmlData())
-        response =  result.encode(type)
+        response =  result.decode('utf-8').encode(type)
         xml2obj = {}
         root = ET.fromstring(response)
         for child_list in root.findall("*"):
