@@ -44,7 +44,7 @@ class SetOrder(BaseHandler):
         formatstr = 'appid=%s&attach=%s&body=%s&mch_id=%s&nonce_str=%s&notify_url=%s&openid=%s&out_trade_no=%s&spbill_create_ip=%s&total_fee=%s&trade_type=%s&key=%s' % (
                     appidvalue, attachvalue,bodyvalue,mch_idvalue,nonce_strvalue,notify_urlvalue,openidvalue,out_trade_novalue, spbill_create_ipvalue, total_feevalue,
                     trade_typevalue, key)
-
+        print formatstr
         signvalue = self.set_md5(formatstr)
 
         xmlstart = "<xml>\r\n"
