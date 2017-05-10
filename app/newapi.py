@@ -249,13 +249,13 @@ class SubSchool(BaseHandler):
     @run_on_executor
     def getdata(self):
         result = self.DbRead.query(
-            self.Exam_place.ep_name,self.Exam_place.ep_address).filter(
+            self.Exam_place.ep_name,self.Exam_place.ep_address,self.Exam_place.ep_id).filter(
             self.Exam_place.ep_schooluid == self.school).all()
         rep = []
         for index,res in enumerate(result):
             if index==0:
-                rep.append({'checked':True,'name': res.ep_name, 'address': res.ep_address})
+                rep.append({'value':res.ep_id,'checked':True,'name': res.ep_name, 'address': res.ep_address})
             else:
-                rep.append({'checked':False,'name': res.ep_name, 'address': res.ep_address})
+                rep.append({'value':res.ep_id,'checked':False,'name': res.ep_name, 'address': res.ep_address})
         self.DbRead.close()
         return rep
