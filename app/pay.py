@@ -61,7 +61,7 @@ class SetOrder(BaseHandler):
         sign = "<sign>" + signvalue + "</sign>\r\n"
         xmlend = "</xml>"
         print body
-        result = xmlstart + appid + attach+body.encode('utf-8')+mch_id+nonce_str+notify_url+openid+out_trade_no+spbill_create_ip+total_fee+trade_type+sign+ xmlend
+        result = xmlstart + appid + attach+str(body).encode('utf-8')+mch_id+nonce_str+notify_url+openid+out_trade_no+spbill_create_ip+total_fee+trade_type+sign+ xmlend
         return result
 
 
