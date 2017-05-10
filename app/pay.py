@@ -17,7 +17,9 @@ from tornado import gen
 from tornado.escape import json_decode
 import urllib2, random, hashlib,sys
 
+reload(sys)
 
+sys.setdefaultencoding('utf8')
 class SetOrder(BaseHandler):
     def set_md5(self,string):
         mobj = hashlib.md5()
@@ -87,7 +89,7 @@ class SetOrder(BaseHandler):
         self.openid = self.get_json_argument("openid",None)
         self.key = "jike712YMiinoo736Rexhu1217Nan909"
         result = self.Posts(self.XmlData())
-        response =  result.decode('utf-8').encode(type)
+        response =  result
         xml2obj = {}
         root = ET.fromstring(response)
         for child_list in root.findall("*"):
