@@ -32,8 +32,7 @@ class SetOrder(BaseHandler):
         attachvalue = self.attachvalue
         mch_idvalue = "1467218302"  # mch_id
         nonce_strvalue = self.GetRandomStr
-        bodyvalue = self.body
-        print bodyvalue
+        bodyvalue = self.body.encode('UTF-8')
         out_trade_novalue = self.id
         total_feevalue = self.total_fee  # 价格
         spbill_create_ipvalue = "120.210.166.7"
@@ -53,7 +52,7 @@ class SetOrder(BaseHandler):
         mch_id = "<mch_id>" + mch_idvalue + "</mch_id>\r\n"
         openid = "<openid>" + openidvalue + "</openid>\r\n"
         nonce_str = "<nonce_str>" + nonce_strvalue + "</nonce_str>\r\n"
-        body = "<body>" + bodyvalue.decode('utf-8').encode(type) + "</body>\r\n"
+        body = "<body>" + bodyvalue + "</body>\r\n"
         out_trade_no = "<out_trade_no>" + out_trade_novalue + "</out_trade_no>\r\n"
         total_fee = "<total_fee>" + total_feevalue + "</total_fee>\r\n"
         spbill_create_ip = "<spbill_create_ip>" + spbill_create_ipvalue + "</spbill_create_ip>\r\n"
