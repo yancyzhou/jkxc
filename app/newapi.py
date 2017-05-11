@@ -212,6 +212,10 @@ class Studentoftrainer(BaseHandler):
     def post(self):
         self.studentid = self.get_json_argument('studentid', None)
         reps = yield self.getdata()
+        if reps:
+            pass
+        else:
+            reps = {}
         rep = {}
         rep['data'] = reps
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
@@ -222,6 +226,8 @@ class Studentoftrainer(BaseHandler):
             self.Student.student_wxcode == self.studentid,self.Trainer.trainer_id==self.Student.student_traineruid).first()
         self.DbRead.commit()
         self.DbRead.close()
+        if result is None:
+            return False
         result1 = self.DbRead.query(func.count(1).label("studentnum")).filter(
             self.Student.student_traineruid == result.trainer_id).first()
         self.DbRead.commit()
