@@ -259,3 +259,22 @@ class SubSchool(BaseHandler):
                 rep.append({'value':res.ep_id,'checked':False,'name': res.ep_name, 'description': res.ep_address})
         self.DbRead.close()
         return rep
+
+
+#学员报名信息
+
+class RegistratorInfo(BaseHandler):
+    executor = ThreadPoolExecutor(8)
+
+    def post(self, *args, **kwargs):
+        self.OpenId = self.get_json_argument('openid',None)
+
+        result = yield self.getdata()
+
+        rep = {}
+        rep['data'] = result
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+    def getdata(self):
+        res = self.Student.query(self.Student).filter(self.Student.student_wxcode==self.OpenId).one()
+        return res
