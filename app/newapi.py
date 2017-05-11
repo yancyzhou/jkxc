@@ -219,7 +219,7 @@ class Studentoftrainer(BaseHandler):
     @run_on_executor
     def getdata(self):
         result = self.DbRead.query(self.Trainer.trainer_id, self.Trainer.trainer_name, self.Trainer.trainer_code, self.Trainer.trainer_dic, self.Trainer.trainer_years,self.Trainer.trainer_headpic).filter(
-            self.Student.student_wxcode == self.studentid).first()
+            self.Student.student_wxcode == self.studentid,self.Trainer.trainer_id==self.Student.student_traineruid).first()
         self.DbRead.commit()
         self.DbRead.close()
         result1 = self.DbRead.query(func.count(1).label("studentnum")).filter(
