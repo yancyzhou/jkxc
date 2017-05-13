@@ -124,8 +124,9 @@ class SetOrder(BaseHandler):
         Order.order_code = order_code
         self.DbRead.add(Order)
         self.DbRead.commit()
-        self.DbRead.close()
         Order_id = Order.order_id
+        self.DbRead.close()
+
         if Order_id:
             result = True
         else:
