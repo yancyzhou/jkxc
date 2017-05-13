@@ -320,6 +320,6 @@ class GetStudentReigstantion(BaseHandler):
                 "package_money":studentdata.package_money,
                 "school_address":studentdata.school_address,
                 "order_code":studentdata.order_code,
-                "order_createtime":studentdata.order_createtime
+                "order_createtime":studentdata.order_createtime.strftime('%Y-%m-%d %H:%M:%S')
             }]
         return data
