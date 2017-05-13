@@ -105,7 +105,7 @@ class SetOrder(BaseHandler):
         signstr = "appId=%s&nonceStr=%s&package=prepay_id=%s&signType=MD5&timeStamp=%s&key=%s" % (self.AppID,xml2obj['nonce_str'],xml2obj['prepay_id'],timestramp_str,self.key)
         secondsign = self.set_md5(signstr)
         rep = {}
-        rep['data'] = {"paysign":secondsign,"out_trade_no":self.id,"prepayid":xml2obj['prepay_id'],"nonceStr":xml2obj['nonce_str'],"timestramp":timestramp_str}
+        rep['data'] = {"order_id":saveresult,"paysign":secondsign,"out_trade_no":self.id,"prepayid":xml2obj['prepay_id'],"nonceStr":xml2obj['nonce_str'],"timestramp":timestramp_str}
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
 
     def SaveOrder(self,packageid,openId,order_code,prepay_id,order_money):
@@ -128,7 +128,7 @@ class SetOrder(BaseHandler):
         self.DbRead.close()
 
         if Order_id:
-            result = True
+            result = Order_id
         else:
             result = False
 
@@ -139,3 +139,17 @@ class PayResult(BaseHandler):
     def get(self, *args, **kwargs):
         result = "<xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>"
         self.write(result)
+
+
+class PaySucess(BaseHandler):
+
+    def post(self, *args, **kwargs):
+        self.order_id = self.get_json_argument('order_id',None)
+
+        student_order = self.DbRead.query(self.Order).filter(self.Order.order_id==self.order_id).with_lockmode("update").one()
+        student_order.order_state = 1
+        self.DbRead.commit()
+        self.DbRead.close()
+        rep = {}
+        rep['data'] = "SUCESS"
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
