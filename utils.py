@@ -19,5 +19,6 @@ Handlers = [
     (r'/api/subschool', SubSchool),
     (r'/api/PayResult', PayResult),
     (r'/api/PaySucess', PaySucess),
+    (r'/api/GetStudentReigstantion', GetStudentReigstantion),
     (r".*", NotFound),
 ]

@@ -284,3 +284,26 @@ class RegistratorInfo(BaseHandler):
     def getdata(self):
         res = self.Student.query(self.Student).filter(self.Student.student_wxcode==self.OpenId).one()
         return res
+
+
+#get student Registration data
+class GetStudentReigstantion(BaseHandler):
+
+    executor = ThreadPoolExecutor(8)
+
+    @gen.coroutine
+    def post(self, *args, **kwargs):
+        self.openId = self.get_json_argument('openid',None)
+
+        result = yield self.getdata()
+        rep = {}
+        rep['data'] = result
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+    @run_on_executor
+    def getdata(self):
+
+        studentdata = self.DbRead.query(self.Student.student_name,self.Student.student_code,self.Student.student_id_number,self.Package.package_name,self.Package.package_money,self.School.school_address).filter(self.Package.package_id==self.Student.student_packageuid,self.Package.package_schooluid==self.School.school_id,self.Student.student_wxcode==self.openId).first()
+
+        self.DbRead.commit()
+        self.DbRead.close()
+        return studentdata
