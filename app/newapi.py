@@ -302,9 +302,20 @@ class GetStudentReigstantion(BaseHandler):
     @run_on_executor
     def getdata(self):
 
-        studentdata = self.DbRead.query(self.Student.student_name,self.Student.student_code,self.Student.student_id_number,self.Package.package_name,self.Package.package_money,self.School.school_address).filter(self.Package.package_id==self.Student.student_packageuid,self.Package.package_schooluid==self.School.school_id,self.Student.student_wxcode==self.openId).first()
+        studentdata = self.DbRead.\
+            query(self.Order.order_code,self.Student.student_name,self.Student.student_code,self.Student.student_id_number,self.Package.package_name,self.Package.package_money,self.School.school_address).\
+            filter(self.Order.order_studentuid==self.Student.student_wxcode,self.Package.package_id==self.Student.student_packageuid,self.Package.package_schooluid==self.School.school_id,self.Student.student_wxcode==self.openId).\
+            first()
 
         self.DbRead.commit()
         self.DbRead.close()
-        data = {"name":studentdata.student_name,"phonenumber":studentdata.student_code,"id_number":studentdata.student_id_number,"package_name":studentdata.package_name,"package_money":studentdata.package_money,"school_address":studentdata.school_address}
+        data = {
+            "name":studentdata.student_name,
+            "phonenumber":studentdata.student_code,
+            "id_number":studentdata.student_id_number,
+            "package_name":studentdata.package_name,
+            "package_money":studentdata.package_money,
+            "school_address":studentdata.school_address,
+            "order_code":studentdata.order_code
+        }
         return data
