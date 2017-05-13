@@ -318,4 +318,4 @@ class GetStudentReigstantion(BaseHandler):
             "school_address":studentdata.school_address,
             "order_code":studentdata.order_code
         }
-        return data
+        return [data]
