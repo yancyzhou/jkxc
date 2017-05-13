@@ -303,7 +303,7 @@ class GetStudentReigstantion(BaseHandler):
     def getdata(self):
 
         studentdata = self.DbRead.\
-            query(self.Order.order_code,self.Student.student_name,self.Student.student_code,self.Student.student_id_number,self.Package.package_name,self.Package.package_money,self.School.school_address).\
+            query(self.Order.order_code,self.Student.student_name,self.Order.order_createtime,self.Student.student_code,self.Student.student_id_number,self.Package.package_name,self.Package.package_money,self.School.school_address).\
             filter(self.Order.order_studentuid==self.Student.student_wxcode,self.Package.package_id==self.Student.student_packageuid,self.Package.package_schooluid==self.School.school_id,self.Student.student_wxcode==self.openId).\
             first()
 
@@ -319,6 +319,7 @@ class GetStudentReigstantion(BaseHandler):
                 "package_name":studentdata.package_name,
                 "package_money":studentdata.package_money,
                 "school_address":studentdata.school_address,
-                "order_code":studentdata.order_code
+                "order_code":studentdata.order_code,
+                "order_createtime":studentdata.order_createtime
             }]
         return data
