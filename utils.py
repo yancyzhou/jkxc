@@ -15,6 +15,7 @@ Handlers = [
     (r'/api/GetUserinfo', GetUserinfo),
     (r'/api/SmsSender', SmsSenders),
     (r'/api/SetOrder', SetOrder),
+    (r'/api/SaveOrder', SaveOrder),
     (r'/api/validationcode', ValidationCode),
     (r'/api/subschool', SubSchool),
     (r'/api/PayResult', PayResult),

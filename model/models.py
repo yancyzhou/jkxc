@@ -167,17 +167,21 @@ class Order(Base):
     order_id = Column(BIGINT(11), primary_key=True)
     order_money = Column(FLOAT(10))
     order_type = Column(BIGINT(9))
-    order_studentuid = Column(BIGINT(11))
+    order_studentuid = Column(VARCHAR(50))
     order_state = Column(BIGINT(9))
+    order_wx_prepay_id = Column(VARCHAR(100))
+    order_code = Column(VARCHAR(50))
     order_packageuid = Column(BIGINT(11))
     order_createtime = Column(DATETIME(15))
 
-    def __init__(self, order_money=0, order_type=0, order_studentuid=0, order_state=0, order_packageuid=0,
+    def __init__(self, order_money=0, order_type=0, order_code=None,order_wx_prepay_id = None,order_studentuid=0, order_state=0, order_packageuid=0,
                  order_createtime=None):
         self.order_money = order_money
         self.order_type = order_type
         self.order_studentuid = order_studentuid
         self.order_state = order_state
+        self.order_code = order_code
+        self.order_wx_prepay_id = order_wx_prepay_id
         self.order_packageuid = order_packageuid
         self.order_createtime = order_createtime
 

@@ -15,7 +15,7 @@
 from Handler import BaseHandler, ApiHTTPError
 from tornado import gen
 from tornado.escape import json_decode
-import urllib2, random, hashlib,sys
+import urllib2, random, hashlib,sys,time
 
 reload(sys)
 
@@ -77,10 +77,11 @@ class SetOrder(BaseHandler):
             import xml.etree.cElementTree as ET
         except ImportError:
             import xml.etree.ElementTree as ET
-        import time
-        type = sys.getfilesystemencoding()
+
         self.AppID = "wxad81631247e48b3e"
-        self.id  = "JIKEXUECHE"+str(time.time()).replace(".","")+str(random.randint(10,100))
+        timestramp = time.time()
+        timestramp_str = str(timestramp).replace(".", "")
+        self.id  = "JIKEXUECHE"+timestramp_str+str(random.randint(10,100))
         self.attachvalue = "JKXC"
         self.body = self.get_json_argument("body",None)
         self.total_fee = self.get_json_argument("total_fee",1000)
@@ -93,11 +94,11 @@ class SetOrder(BaseHandler):
         root = ET.fromstring(response)
         for child_list in root.findall("*"):
             xml2obj[child_list.tag]=child_list.text
-        timestramp = str(time.time()).replace(".","")
-        signstr = "appId=%s&nonceStr=%s&package=prepay_id=%s&signType=MD5&timeStamp=%s&key=%s" % (self.AppID,xml2obj['nonce_str'],xml2obj['prepay_id'],timestramp,self.key)
+
+        signstr = "appId=%s&nonceStr=%s&package=prepay_id=%s&signType=MD5&timeStamp=%s&key=%s" % (self.AppID,xml2obj['nonce_str'],xml2obj['prepay_id'],timestramp_str,self.key)
         secondsign = self.set_md5(signstr)
         rep = {}
-        rep['data'] = {"paysign":secondsign,"out_trade_no":self.id,"prepayid":xml2obj['prepay_id'],"nonceStr":xml2obj['nonce_str'],"timestramp":timestramp}
+        rep['data'] = {"paysign":secondsign,"out_trade_no":self.id,"prepayid":xml2obj['prepay_id'],"nonceStr":xml2obj['nonce_str'],"timestramp":timestramp_str}
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
 
 
@@ -106,3 +107,34 @@ class PayResult(BaseHandler):
     def get(self, *args, **kwargs):
         result = "<xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>"
         self.write(result)
+
+
+class SaveOrder(BaseHandler):
+
+    def post(self, *args, **kwargs):
+        self.packageid = self.get_json_argument("packageid",0)
+        self.order_money = self.get_json_argument("order_money",0)
+        self.openId = self.get_json_argument("openId",0)
+        self.order_code = self.get_json_argument("order_code",0)
+        self.prepay_id = self.get_json_argument("prepay_id",0)
+        timestramp = time.time()
+
+        Order = self.Order()
+        Order.order_packageuid = self.packageid
+        Order.order_createtime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(timestramp))
+        Order.order_money = self.order_money
+        Order.order_studentuid = self.openId
+        Order.order_type = 0
+        Order.order_wx_prepay_id = self.prepay_id
+        Order.order_code = self.order_code
+        self.DbRead.add(Order)
+        self.DbRead.commit()
+        self.DbRead.close()
+        Order_id = Order.order_id
+        rep = {}
+        if Order_id:
+            rep['data'] = 1
+        else:
+            rep['data'] = 0
+
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
