@@ -306,4 +306,5 @@ class GetStudentReigstantion(BaseHandler):
 
         self.DbRead.commit()
         self.DbRead.close()
-        return studentdata
+        data = {"name":studentdata.student_name,"phonenumber":studentdata.student_code,"id_number":studentdata.student_id_number,"package_name":studentdata.package_name,"package_money":studentdata.package_money,"school_address":studentdata.school_address}
+        return data
