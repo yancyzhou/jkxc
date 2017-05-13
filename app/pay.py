@@ -116,7 +116,7 @@ class SetOrder(BaseHandler):
         Order.order_createtime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(timestramp))
         Order.order_money = order_money
         Order.order_studentuid = openId
-        if self.total_fee=='50000':
+        if self.total_fee==50000:
             Order.order_type = 0
         else:
             Order.order_type = 1
