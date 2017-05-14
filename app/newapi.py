@@ -325,7 +325,7 @@ class GetStudentReigstantion(BaseHandler):
         return data
 
 
-class SetStudent(BaseHandler):
+class Login(BaseHandler):
 
     executor = ThreadPoolExecutor(8)
 
