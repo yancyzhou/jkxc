@@ -44,10 +44,11 @@ class Student(Base):
     student_create_time = Column(DATETIME(25))
     student_schooluid = Column(BIGINT(11))
     student_traineruid = Column(BIGINT(11))
+    student_eqid = Column(BIGINT(11))
 
     def __init__(self, student_id=None, student_code=None, student_name=None, student_nickname=None, student_password=None, student_headpic=None,
                  student_wxcode=None, student_id_number=None, student_pic=None, student_state=0, student_packageuid=0,
-                 student_create_time=None, student_schooluid=None, student_traineruid=None):
+                 student_create_time=None, student_schooluid=None, student_traineruid=None,student_eqid=0):
         self.student_id = student_id
         self.student_code = student_code
         self.student_name = student_name
@@ -62,6 +63,7 @@ class Student(Base):
         self.student_create_time = student_create_time
         self.student_schooluid = student_schooluid
         self.student_traineruid = student_traineruid
+        self.student_eqid = student_eqid
 
 class Trainer(Base):
     __tablename__ = 'jkxc_trainer'
