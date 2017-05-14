@@ -255,7 +255,7 @@ class SubSchool(BaseHandler):
     @run_on_executor
     def getdata(self):
         result = self.DbRead.query(
-            self.Exam_place.ep_name,self.Exam_place.ep_address,self.Exam_place.ep_id).filter(
+            self.Exam_place).filter(
             self.Exam_place.ep_schooluid == self.school).all()
         rep = []
         for index,res in enumerate(result):
