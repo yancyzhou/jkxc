@@ -373,3 +373,23 @@ class Login(BaseHandler):
                 if (t2-t1).seconds<=expired_time*60:
                     res = True
         return res
+
+
+#获取未完成的订单信息
+class GetOrder(BaseHandler):
+
+    executor = ThreadPoolExecutor(8)
+
+    def post(self, *args, **kwargs):
+        self.StudentCode = self.get_json_argument('studentcode',None)
+
+        result = yield self.getdata()
+
+        rep = {}
+        rep['data'] = result
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+    @run_on_executor
+    def getdata(self):
+
+        res = self.DbRead.query(self.Student,self.Package,self.Exam_place).filter(self.Student.student_packageuid==self.Package.package_id,self.Exam_place.ep_schooluid==self.Student.student_schooluid,self.Student.student_code==self.StudentCode).first()

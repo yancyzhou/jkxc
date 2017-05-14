@@ -86,6 +86,11 @@ class SetOrder(BaseHandler):
         self.body = self.get_json_argument("body",None)
         self.total_fee = self.get_json_argument("total_fee",1)
         self.packageid = self.get_json_argument("packageid",0)
+        self.branchschoolid = self.get_json_argument("branchschoolid",0)
+        self.saleman = self.get_json_argument("saleman",0)
+        self.phoneNumber = self.get_json_argument("phoneNumber",0)
+        self.username = self.get_json_argument("username",0)
+        self.id_Number = self.get_json_argument("id_Number",0)
         self.openid = self.get_json_argument("openid",None)
         self.key = "jike712YMiinoo736Rexhu1217Nan909"
         data = self.XmlData()
@@ -98,7 +103,13 @@ class SetOrder(BaseHandler):
         if "prepay_id" in xml2obj.keys():
             saveresult = self.SaveOrder(self.packageid,self.openid,self.id,xml2obj['prepay_id'],int(self.total_fee)/100)
             if saveresult:
-                pass
+                student = self.DbRead.query(self.Student).filter(self.Student.student_code==self.phoneNumber).first()
+                student.student_packageuid = self.packageid
+                student.student_code = self.phoneNumber
+                student.student_name = self.username
+                student.student_id_number = self.id_Number
+                self.DbRead.commit()
+                self.DbRead.close()
             else:
                 self.writejson(json_decode(str(ApiHTTPError(10500))))
                 return False
