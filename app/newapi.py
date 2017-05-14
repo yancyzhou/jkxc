@@ -355,7 +355,7 @@ class Login(BaseHandler):
                 data = Student.student_id
                 self.DbRead.close()
         else:
-            data = ""
+            data = {"code":0}
         rep = {}
         rep['data'] = data
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
