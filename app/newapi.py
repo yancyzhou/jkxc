@@ -333,13 +333,14 @@ class SetStudent(BaseHandler):
     def post(self, *args, **kwargs):
         self.code = self.get_json_argument("code",None)
         self.phoneNum = self.get_json_argument("phoneNum",None)
+        self.schoolid = self.get_json_argument("schoolid",1)
         expired_time = 3
         result = yield self.validationcode(expired_time)
 
 
         if result:
             student_select = self.DbRead.query(self.Student.student_id).filter(
-                self.Student.student_code == self.phoneNum).first()
+                self.Student.student_code == self.phoneNum,self.Student.student_schooluid==self.schoolid).first()
             self.DbRead.commit()
             self.DbRead.close()
             if student_select:
@@ -347,6 +348,7 @@ class SetStudent(BaseHandler):
             else:
                 Student = self.Student()
                 Student.student_code = self.phoneNum
+                Student.student_schooluid = self.schoolid
                 Student.student_create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 self.Student.add(Student)
                 self.DbRead.commit()
