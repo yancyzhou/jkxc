@@ -101,9 +101,11 @@ class SetOrder(BaseHandler):
         for child_list in root.findall("*"):
             xml2obj[child_list.tag]=child_list.text
         if "prepay_id" in xml2obj.keys():
-            saveresult = self.SaveOrder(self.packageid,self.openid,self.id,xml2obj['prepay_id'],int(self.total_fee)/100)
+            student = self.DbRead.query(self.Student).filter(self.Student.student_code == self.phoneNumber).first()
+
+            saveresult = self.SaveOrder(student.student_id,self.packageid,self.id,xml2obj['prepay_id'],int(self.total_fee)/100)
             if saveresult:
-                student = self.DbRead.query(self.Student).filter(self.Student.student_code==self.phoneNumber).first()
+
                 student.student_packageuid = self.packageid
                 student.student_eqid = self.branchschoolid
                 student.student_code = self.phoneNumber
@@ -120,14 +122,14 @@ class SetOrder(BaseHandler):
         rep['data'] = {"order_id":saveresult,"paysign":secondsign,"out_trade_no":self.id,"prepayid":xml2obj['prepay_id'],"nonceStr":xml2obj['nonce_str'],"timestramp":timestramp_str}
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
 
-    def SaveOrder(self,packageid,openId,order_code,prepay_id,order_money):
+    def SaveOrder(self,studentid,packageid,order_code,prepay_id,order_money):
         timestramp = time.time()
 
         Order = self.Order()
         Order.order_packageuid = packageid
         Order.order_createtime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(timestramp))
         Order.order_money = order_money
-        Order.order_studentuid = openId
+        Order.order_studentuid = studentid
         if self.total_fee==50000:
             Order.order_type = 0
         else:
