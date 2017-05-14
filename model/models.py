@@ -138,14 +138,18 @@ class Exam_place(Base):
     ep_id = Column(BIGINT(11), primary_key=True)
     ep_name = Column(VARCHAR(100))
     ep_address = Column(VARCHAR(255))
+    ep_longitude = Column(VARCHAR(20))
+    ep_latitude = Column(VARCHAR(20))
     ep_phonenumber = Column(VARCHAR(50))
     ep_schooluid = Column(BIGINT(11))
 
-    def __init__(self, ep_name=None, ep_address=None, ep_phonenumber=None, ep_schooluid=0):
+    def __init__(self, ep_name=None, ep_latitude=None,ep_longitude=None,ep_address=None, ep_phonenumber=None, ep_schooluid=0):
         self.ep_name = ep_name
         self.ep_address = ep_address
         self.ep_phonenumber = ep_phonenumber
         self.ep_schooluid = ep_schooluid
+        self.ep_latitude = ep_latitude
+        self.ep_longitude = ep_longitude
 
 
 class SmLog(Base):

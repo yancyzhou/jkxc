@@ -260,9 +260,9 @@ class SubSchool(BaseHandler):
         rep = []
         for index,res in enumerate(result):
             if index==0:
-                rep.append({'value':res.ep_id,'checked':True,'name': res.ep_name, 'description': res.ep_address})
+                rep.append({'ep_longitude':res.ep_longitude,'ep_latitude':res.ep_latitude,'value':res.ep_id,'checked':True,'name': res.ep_name, 'description': res.ep_address})
             else:
-                rep.append({'value':res.ep_id,'checked':False,'name': res.ep_name, 'description': res.ep_address})
+                rep.append({'ep_longitude':res.ep_longitude,'ep_latitude':res.ep_latitude,'value':res.ep_id,'checked':False,'name': res.ep_name, 'description': res.ep_address})
         self.DbRead.close()
         return rep
 
@@ -323,3 +323,12 @@ class GetStudentReigstantion(BaseHandler):
                 "order_createtime":studentdata.order_createtime.strftime('%Y-%m-%d %H:%M:%S')
             }]
         return data
+
+
+class SetStudent(BaseHandler):
+
+    executor = ThreadPoolExecutor(8)
+
+    def post(self, *args, **kwargs):
+
+        self.openid = self.get_json_argument('opendid',None)
