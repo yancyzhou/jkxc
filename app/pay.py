@@ -105,7 +105,7 @@ class SetOrder(BaseHandler):
             if saveresult:
                 student = self.DbRead.query(self.Student).filter(self.Student.student_code==self.phoneNumber).first()
                 student.student_packageuid = self.packageid
-                student.student_packageuid = self.packageid
+                student.student_eqid = self.branchschoolid
                 student.student_code = self.phoneNumber
                 student.student_name = self.username
                 student.student_id_number = self.id_Number
