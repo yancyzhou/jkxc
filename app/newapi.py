@@ -350,7 +350,7 @@ class Login(BaseHandler):
                 Student.student_code = self.phoneNum
                 Student.student_schooluid = self.schoolid
                 Student.student_create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                self.Student.add(Student)
+                self.DbRead.add(Student)
                 self.DbRead.commit()
                 data = Student.student_id
                 self.DbRead.close()
