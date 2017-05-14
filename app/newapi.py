@@ -210,7 +210,7 @@ class Studentoftrainer(BaseHandler):
 
     @gen.coroutine
     def post(self):
-        self.studentid = self.get_json_argument('studentid', None)
+        self.studentid = self.get_json_argument('studentcode', None)
         reps = yield self.getdata()
         if reps:
             pass
@@ -223,7 +223,7 @@ class Studentoftrainer(BaseHandler):
     @run_on_executor
     def getdata(self):
         result = self.DbRead.query(self.Trainer.trainer_id, self.Trainer.trainer_name, self.Trainer.trainer_code, self.Trainer.trainer_dic, self.Trainer.trainer_years,self.Trainer.trainer_headpic).filter(
-            self.Student.student_wxcode == self.studentid,self.Trainer.trainer_id==self.Student.student_traineruid).first()
+            self.Student.student_code == self.studentid,self.Trainer.trainer_id==self.Student.student_traineruid).first()
         self.DbRead.commit()
         self.DbRead.close()
         if result is None:
