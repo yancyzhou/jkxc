@@ -344,7 +344,7 @@ class Login(BaseHandler):
             self.DbRead.commit()
             self.DbRead.close()
             if student_select:
-                data = student_select.student_id
+                data = {"code":student_select.student_id}
             else:
                 Student = self.Student()
                 Student.student_code = self.phoneNum
@@ -352,7 +352,7 @@ class Login(BaseHandler):
                 Student.student_create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 self.DbRead.add(Student)
                 self.DbRead.commit()
-                data = Student.student_id
+                data = {"code":Student.student_id}
                 self.DbRead.close()
         else:
             data = {"code":0}
