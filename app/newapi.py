@@ -329,6 +329,45 @@ class SetStudent(BaseHandler):
 
     executor = ThreadPoolExecutor(8)
 
+    @gen.coroutine
     def post(self, *args, **kwargs):
+        self.code = self.get_json_argument("code",None)
+        self.phoneNum = self.get_json_argument("phoneNum",None)
+        expired_time = 3
+        result = yield self.validationcode(expired_time)
 
-        self.openid = self.get_json_argument('opendid',None)
+
+        if result:
+            student_select = self.DbRead.query(self.Student.student_id).filter(
+                self.Student.student_code == self.phoneNum).first()
+            self.DbRead.commit()
+            self.DbRead.close()
+            if student_select:
+                data = student_select.student_id
+            else:
+                Student = self.Student()
+                Student.student_code = self.phoneNum
+                Student.student_create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                self.Student.add(Student)
+                self.DbRead.commit()
+                data = Student.student_id
+                self.DbRead.close()
+        else:
+            data = ""
+        rep = {}
+        rep['data'] = data
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+    @run_on_executor
+    def validationcode(self,expired_time):
+        result = self.DbRead.query(self.SmLog.smlog_createtime).filter(self.SmLog.smlog_usercode==self.phoneNum,func.substr(self.SmLog.smlog_message,7,6)==self.code).order_by(self.SmLog.smlog_createtime.desc()).first()
+        self.DbRead.commit()
+        self.DbRead.close()
+        res = False
+        if result:
+            for item in result:
+                t1 = item
+                t2 = datetime.now()
+                if (t2-t1).seconds<=expired_time*60:
+                    res = True
+        return res
