@@ -70,14 +70,14 @@ class GetUserinfo(BaseHandler):
         rep = pc.decryptData(encryptedData, iv)
         return rep
 
+
 class getstudent(BaseHandler):
 
     executor = ThreadPoolExecutor(8)
 
     @gen.coroutine
-    def post(self, *args, **kwargs):
-        self.studentcode = self.get_json_argument("studentcode",None)
-
+    def post(self):
+        self.studentcode = self.get_json_argument("studentcode", None)
         res = yield self.getdata()
         rep = {}
         rep['data'] = res

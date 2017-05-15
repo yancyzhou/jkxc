@@ -286,7 +286,7 @@ class RegistratorInfo(BaseHandler):
         return res
 
 
-#get student Registration data
+# get student Registration data
 class GetStudentReigstantion(BaseHandler):
 
     executor = ThreadPoolExecutor(8)
@@ -326,7 +326,6 @@ class GetStudentReigstantion(BaseHandler):
 
 
 class Login(BaseHandler):
-
     executor = ThreadPoolExecutor(8)
 
     @gen.coroutine
@@ -375,13 +374,13 @@ class Login(BaseHandler):
         return res
 
 
-#获取未完成的订单信息
+# 获取未完成的订单信息
 class GetOrder(BaseHandler):
-
     executor = ThreadPoolExecutor(8)
 
+    @gen.coroutine
     def post(self, *args, **kwargs):
-        self.StudentCode = self.get_json_argument('studentcode',None)
+        self.studentcode = self.get_json_argument('studentcode', None)
 
         result = yield self.getdata()
 
@@ -391,5 +390,11 @@ class GetOrder(BaseHandler):
 
     @run_on_executor
     def getdata(self):
+        res = self.DbRead.query(self.Package.package_money, self.Package.package_name, self.Order.order_code,self.Order.order_money)\
+                    .filter(self.Student.student_code==self.studentcode,self.Student.student_packageuid==self.Package.package_id,self.Exam_place.ep_schooluid==self.Student.student_schooluid,self.Order.order_studentuid==self.Student.student_id).first()
 
-        res = self.DbRead.query(self.Student,self.Package,self.Exam_place).filter(self.Student.student_packageuid==self.Package.package_id,self.Exam_place.ep_schooluid==self.Student.student_schooluid,self.Student.student_code==self.StudentCode).first()
+        if res is not None:
+            data = res
+        else:
+            data = 0
+        return data
