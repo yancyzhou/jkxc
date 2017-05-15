@@ -215,7 +215,7 @@ class Studentoftrainer(BaseHandler):
         if reps:
             pass
         else:
-            reps = {}
+            reps = 0
         rep = {}
         rep['data'] = reps
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
