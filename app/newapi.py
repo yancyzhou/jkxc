@@ -396,5 +396,5 @@ class GetNotDoneOrder(BaseHandler):
         if res is not None:
             data = {'order_code':res.order_code,'packagename': res.package_name,'packagemoney':res.package_money,'ep_name':res.ep_name, 'order_money':res.order_money,'order_state':res.order_state,'order_type':res.order_type}
         else:
-            data = []
+            data = 0
         return data
