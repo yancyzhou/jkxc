@@ -394,7 +394,7 @@ class GetNotDoneOrder(BaseHandler):
                     .filter(self.Student.student_code==self.studentcode,self.Student.student_packageuid==self.Package.package_id,self.Exam_place.ep_schooluid==self.Student.student_schooluid,self.Order.order_studentuid==self.Student.student_id).first()
 
         if res is not None:
-            data = {'packagename': res.package_name,'packagemoney':res.package_money,'ep_name':res.ep_name, 'order_money':res.order_money,'order_state':res.order_state,'order_type':res.order_type}
+            data = {'order_code':res.order_code,'packagename': res.package_name,'packagemoney':res.package_money,'ep_name':res.ep_name, 'order_money':res.order_money,'order_state':res.order_state,'order_type':res.order_type}
         else:
             data = []
         return data
