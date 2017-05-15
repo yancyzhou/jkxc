@@ -74,6 +74,7 @@ class getstudent(BaseHandler):
 
     executor = ThreadPoolExecutor(8)
 
+    @gen.coroutine
     def post(self, *args, **kwargs):
         self.studentcode = self.get_json_argument("studentcode",None)
 
@@ -82,6 +83,7 @@ class getstudent(BaseHandler):
         rep['data'] = res
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
 
+    @run_on_executor
     def getdata(self):
 
         res = self.DbRead.query(self.Student.student_id).filter(self.Student.student_code==self.studentcode,self.Student.student_packageuid==self.Package.package_id).first()
