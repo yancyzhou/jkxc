@@ -89,7 +89,7 @@ class getstudent(BaseHandler):
         res = self.DbRead.query(self.Student.student_id).filter(self.Student.student_code==self.studentcode,self.Student.student_packageuid==self.Package.package_id).first()
 
         if res is not None:
-            result = res.student_id
+            result = 1
         else:
-            result = None
+            result = 0
         return result
