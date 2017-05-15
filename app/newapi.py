@@ -375,7 +375,7 @@ class Login(BaseHandler):
 
 
 # 获取未完成的订单信息
-class GetOrder(BaseHandler):
+class GetNotDoneOrder(BaseHandler):
     executor = ThreadPoolExecutor(8)
 
     @gen.coroutine
@@ -390,11 +390,11 @@ class GetOrder(BaseHandler):
 
     @run_on_executor
     def getdata(self):
-        res = self.DbRead.query(self.Package.package_money, self.Package.package_name, self.Order.order_code,self.Order.order_money)\
+        res = self.DbRead.query(self.Package.package_money, self.Order.order_state,self.Order.order_type,self.Exam_place.ep_name,self.Package.package_name, self.Order.order_code,self.Order.order_money)\
                     .filter(self.Student.student_code==self.studentcode,self.Student.student_packageuid==self.Package.package_id,self.Exam_place.ep_schooluid==self.Student.student_schooluid,self.Order.order_studentuid==self.Student.student_id).first()
 
         if res is not None:
-            data = res
+            data = {'packagename': res.package_name,'packagemoney':res.package_money,'ep_name':res.ep_name, 'order_money':res.order_money,'order_state':res.order_state,'order_type':res.order_type}
         else:
-            data = 0
+            data = []
         return data
