@@ -293,7 +293,7 @@ class GetStudentReigstantion(BaseHandler):
 
     @gen.coroutine
     def post(self, *args, **kwargs):
-        self.openId = self.get_json_argument('openid',None)
+        self.studentcode = self.get_json_argument('studentcode',None)
 
         result = yield self.getdata()
         rep = {}
@@ -304,7 +304,7 @@ class GetStudentReigstantion(BaseHandler):
 
         studentdata = self.DbRead.\
             query(self.Order.order_code,self.Student.student_name,self.Order.order_createtime,self.Student.student_code,self.Student.student_id_number,self.Package.package_name,self.Package.package_money,self.School.school_address).\
-            filter(self.Order.order_studentuid==self.Student.student_wxcode,self.Package.package_id==self.Student.student_packageuid,self.Package.package_schooluid==self.School.school_id,self.Student.student_wxcode==self.openId).\
+            filter(self.Order.order_studentuid==self.Student.student_id,self.Package.package_id==self.Student.student_packageuid,self.Package.package_schooluid==self.School.school_id,self.Student.student_code==self.studentcode).\
             first()
 
         self.DbRead.commit()
