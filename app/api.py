@@ -70,4 +70,24 @@ class GetUserinfo(BaseHandler):
         rep = pc.decryptData(encryptedData, iv)
         return rep
 
+class getstudent(BaseHandler):
 
+    executor = ThreadPoolExecutor(8)
+
+    def post(self, *args, **kwargs):
+        self.studentcode = self.get_json_argument("studentcode",None)
+
+        res = yield self.getdata()
+        rep = {}
+        rep['data'] = res
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+    def getdata(self):
+
+        res = self.DbRead.query(self.Student.student_id).filter(self.Student.student_code==self.studentcode,self.Student.student_packageuid==self.Package.package_id).first()
+
+        if res is not None:
+            result = res.student_id
+        else:
+            result = None
+        return result
