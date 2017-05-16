@@ -100,8 +100,10 @@ class SetOrder(BaseHandler):
         root = ET.fromstring(response)
         for child_list in root.findall("*"):
             xml2obj[child_list.tag]=child_list.text
+        signstr = "appId=%s&nonceStr=%s&package=prepay_id=%s&signType=MD5&timeStamp=%s&key=%s" % (self.AppID,xml2obj['nonce_str'],xml2obj['prepay_id'],timestramp_str,self.key)
+        secondsign = self.set_md5(signstr)
         if "prepay_id" in xml2obj.keys():
-            saveresult = self.SaveOrder(self.packageid,self.id,xml2obj['prepay_id'],int(self.total_fee)/100)
+            saveresult = self.SaveOrder(self.packageid,self.id,xml2obj['prepay_id'],int(self.total_fee)/100,xml2obj['nonce_str'],secondsign)
             if saveresult:
                 student = self.DbRead.query(self.Student).filter(self.Student.student_code == self.phoneNumber).first()
                 student.student_packageuid = self.packageid
@@ -114,13 +116,12 @@ class SetOrder(BaseHandler):
             else:
                 self.writejson(json_decode(str(ApiHTTPError(10500))))
                 return False
-        signstr = "appId=%s&nonceStr=%s&package=prepay_id=%s&signType=MD5&timeStamp=%s&key=%s" % (self.AppID,xml2obj['nonce_str'],xml2obj['prepay_id'],timestramp_str,self.key)
-        secondsign = self.set_md5(signstr)
+
         rep = {}
         rep['data'] = {"order_id":saveresult,"paysign":secondsign,"out_trade_no":self.id,"prepayid":xml2obj['prepay_id'],"nonceStr":xml2obj['nonce_str'],"timestramp":timestramp_str}
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
 
-    def SaveOrder(self,packageid,order_code,prepay_id,order_money):
+    def SaveOrder(self,packageid,order_code,prepay_id,order_money,nonceStr,paysign):
         timestramp = time.time()
         student = self.DbRead.query(self.Student).filter(self.Student.student_code == self.phoneNumber).first()
 
@@ -128,6 +129,8 @@ class SetOrder(BaseHandler):
         Order.order_packageuid = packageid
         Order.order_createtime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(timestramp))
         Order.order_money = order_money
+        Order.order_nonceStr = nonceStr
+        Order.order_paysign = paysign
         Order.order_studentuid = student.student_id
         if self.total_fee==50000:
             Order.order_type = 0
