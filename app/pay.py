@@ -17,6 +17,10 @@ from tornado import gen
 from tornado.escape import json_decode
 import urllib2, random, hashlib,sys,time
 
+try:
+    import xml.etree.cElementTree as ET
+except ImportError:
+    import xml.etree.ElementTree as ET
 reload(sys)
 
 sys.setdefaultencoding('utf8')
@@ -73,10 +77,7 @@ class SetOrder(BaseHandler):
 
 
     def post(self, *args, **kwargs):
-        try:
-            import xml.etree.cElementTree as ET
-        except ImportError:
-            import xml.etree.ElementTree as ET
+
 
         self.AppID = "wxad81631247e48b3e"
         timestramp = time.time()
@@ -169,3 +170,63 @@ class PaySucess(BaseHandler):
         rep = {}
         rep['data'] = "SUCESS"
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+
+class CloseOrder(BaseHandler):
+
+    def set_md5(self,string):
+        mobj = hashlib.md5()
+        mobj.update(string)
+        signvalue = mobj.hexdigest()
+        signvalue = signvalue.upper()
+        return signvalue
+
+    def XmlData(self):
+        appidvalue = self.AppID  # appid
+        mch_idvalue = "1467218302"  # mch_id
+        nonce_strvalue = self.GetRandomStr
+        out_trade_novalue = self.OrderCode
+        total_feevalue = '1'#self.total_fee  # 价格
+        spbill_create_ipvalue = "127.0.0.1"
+        trade_typevalue = "JSAPI"
+        key = self.key  # 用户配置
+
+        formatstr = 'appid=%s&mch_id=%s&nonce_str=%s&out_trade_no=%s&spbill_create_ip=%s&total_fee=%s&trade_type=%s&key=%s' % (appidvalue,mch_idvalue,nonce_strvalue,out_trade_novalue, spbill_create_ipvalue, total_feevalue,trade_typevalue, key)
+        signvalue = self.set_md5(formatstr)
+
+        xmlstart = "<xml>\r\n"
+        appid = "<appid>" + appidvalue + "</appid>\r\n"
+        mch_id = "<mch_id>" + mch_idvalue + "</mch_id>\r\n"
+        nonce_str = "<nonce_str>" + nonce_strvalue + "</nonce_str>\r\n"
+        out_trade_no = "<out_trade_no>" + out_trade_novalue + "</out_trade_no>\r\n"
+        total_fee = "<total_fee>" + str(total_feevalue) + "</total_fee>\r\n"
+        spbill_create_ip = "<spbill_create_ip>" + spbill_create_ipvalue + "</spbill_create_ip>\r\n"
+        trade_type = "<trade_type>" + trade_typevalue + "</trade_type>\r\n"
+        sign = "<sign>" + signvalue + "</sign>\r\n"
+        xmlend = "</xml>"
+        result = xmlstart + appid + mch_id+nonce_str+out_trade_no+spbill_create_ip+total_fee+trade_type+sign+ xmlend
+        return result.encode('utf-8')
+
+    def post(self, *args, **kwargs):
+        self.OrderCode = self.get_json_argument('order_code',None)
+        self.AppID = "wxad81631247e48b3e"
+        self.key = "jike712YMiinoo736Rexhu1217Nan909"
+        data = self.XmlData()
+        result = self.Posts(data)
+
+        response = result
+        xml2obj = {}
+        root = ET.fromstring(response)
+        for child_list in root.findall("*"):
+            xml2obj[child_list.tag] = child_list.text
+
+        rep = {}
+        rep['data'] = xml2obj
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+    def Posts(self,data):
+        url = "https://api.mch.weixin.qq.com/pay/unifiedorder"
+        headers = {"Content-Type": "text/xml"}
+        rep = urllib2.Request(url=url, headers=headers, data=data)
+        response = urllib2.urlopen(rep)
+        res = response.read()
+        return res

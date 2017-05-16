@@ -22,6 +22,7 @@ Handlers = [
     (r'/api/PayResult', PayResult),
     (r'/api/PaySucess', PaySucess),
     (r'/api/GetNotDoneOrder', GetNotDoneOrder),
+    (r'/api/CloseOrder', CloseOrder),
     (r'/api/GetStudentReigstantion', GetStudentReigstantion),
     (r".*", NotFound),
 ]
