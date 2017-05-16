@@ -340,12 +340,12 @@ class Login(BaseHandler):
 
 
         if result:
-            student_select = self.DbRead.query(self.Student.student_id).filter(
+            student_select = self.DbRead.query(self.Student.student_id,self.Student.student_state).filter(
                 self.Student.student_code == self.phoneNum,self.Student.student_schooluid==self.schoolid).first()
             self.DbRead.commit()
             self.DbRead.close()
             if student_select:
-                data = {"code":student_select.student_id}
+                data = {"code":student_select.student_id,'student_state':student_select.student_state}
             else:
                 Student = self.Student()
                 Student.student_code = self.phoneNum
@@ -353,7 +353,7 @@ class Login(BaseHandler):
                 Student.student_create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 self.DbRead.add(Student)
                 self.DbRead.commit()
-                data = {"code":Student.student_id}
+                data = {"code":Student.student_id,'student_state':student_select.student_state}
                 self.DbRead.close()
         else:
             data = {"code":0}
