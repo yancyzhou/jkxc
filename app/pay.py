@@ -214,6 +214,7 @@ class CloseOrder(BaseHandler):
         root = ET.fromstring(response)
         for child_list in root.findall("*"):
             xml2obj[child_list.tag] = child_list.text
+        print  xml2obj
         if xml2obj['return_code']=='SUCCESS' and xml2obj['result_code']=='SUCCESS':
             order = self.DbRead.query(self.Order.order_id).filter(self.Order.order_code==self.OrderCode).delete()
             self.DbRead.commit()
