@@ -217,7 +217,11 @@ class CloseOrder(BaseHandler):
         if xml2obj['return_code']=='SUCCESS' and xml2obj['result_code']=='SUCCESS':
             order = self.DbRead.query(self.Order.order_id).filter(self.Order.order_code==self.OrderCode).delete()
             self.DbRead.commit()
-            order_id = order.order_id
+            if order:
+                student = self.DbRead.query(self.Student).filter(self.Student.student_code==self.usercode).first()
+                student.student_packageuid = 0
+                student.student_eqid = 0
+                self.DbRead.commit()
             self.DbRead.close()
             closeorder_status = 1
         else:
