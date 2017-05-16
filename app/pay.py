@@ -210,6 +210,7 @@ class CloseOrder(BaseHandler):
         data = self.XmlData()
         result = self.Posts(data)
         response = result
+        print result
         xml2obj = {}
         root = ET.fromstring(response)
         for child_list in root.findall("*"):
