@@ -187,7 +187,7 @@ class CloseOrder(BaseHandler):
         nonce_strvalue = self.GetRandomStr
         out_trade_novalue = self.OrderCode
         total_feevalue = '1'#self.total_fee  # 价格
-        spbill_create_ipvalue = "123.206.108.82"
+        spbill_create_ipvalue = "120.210.166.7"
         trade_typevalue = "JSAPI"
         key = self.key  # 用户配置
 
