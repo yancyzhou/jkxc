@@ -215,8 +215,8 @@ class CloseOrder(BaseHandler):
         for child_list in root.findall("*"):
             xml2obj[child_list.tag] = child_list.text
         if xml2obj['return_code']=='SUCCESS' and xml2obj['result_code']=='SUCCESS':
-            self.DbRead.query.filter(self.Order.order_code==self.OrderCode).delete()
-            print self.DbRead.query.get(1)
+            self.DbRead.query().filter(self.Order.order_code==self.OrderCode).delete()
+            print self.DbRead.query().get(1)
             self.DbRead.commit()
             self.DbRead.close()
             closeorder_status = 1
