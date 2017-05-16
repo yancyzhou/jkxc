@@ -48,6 +48,10 @@ class BaseHandler(RequestHandler):
         return self.application.DbRead
 
     @property
+    def Student_Demo(self):
+        return models.Student_demo
+
+    @property
     def Student(self):
         return models.Student
 

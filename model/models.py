@@ -229,7 +229,7 @@ class Student_courses(Base):
     sc_coursesuid = Column(BIGINT(11))
     sc_studentuid = Column(BIGINT(11))
     sc_state = Column(BIGINT(9))
-    sc_createtime = Column(DATETIME(20))
+    sc_createtime = Column(DATETIME)
 
     def __init__(self, sc_traineruid=0, sc_coursesuid=0, sc_studentuid=0, sc_state=0, sc_createtime=datetime.now()):
         self.sc_traineruid = sc_traineruid
@@ -237,3 +237,18 @@ class Student_courses(Base):
         self.sc_studentuid = sc_studentuid
         self.sc_state = sc_state
         self.sc_createtime = sc_createtime
+
+
+class Student_demo(Base):
+    __tablename__ = 'jkxc_student_demo'
+    sd_id = Column(BIGINT(11), primary_key=True)
+    sd_studentuid = Column(BIGINT(11))
+    sd_phone = Column(BIGINT(11))
+    sd_state = Column(BIGINT(9))
+    sd_createtime = Column(DATETIME)
+
+    def __init__(self, sd_studentuid=0, sd_state=0, sd_phone=0, sd_createtime=datetime.now()):
+        self.sd_studentuid = sd_studentuid
+        self.sd_state = sd_state
+        self.sd_phone = sd_phone
+        self.sd_createtime = sd_createtime

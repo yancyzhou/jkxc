@@ -27,8 +27,8 @@ def cli(**kwargs):
     # Base.column_dict = column_dict #add data for select to dict
 
 
-# def init_db():
-    # Base.metadata.create_all(EngineInsert)
+def init_db():
+    Base.metadata.create_all(EngineRead)
 
 
 class Application(tornado.web.Application):

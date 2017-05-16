@@ -81,8 +81,15 @@ class ValidationCode(BaseHandler):
     def post(self, *args, **kwargs):
         self.code = self.get_json_argument("code",None)
         self.phoneNum = self.get_json_argument("phoneNum",None)
+        self.studentuid = self.get_json_argument("studentid",None)
         expired_time = 3
         result = yield self.validationcode(expired_time)
+        if result == 1:
+            SDemo = self.Student_Demo()
+            SDemo.sd_phone = self.phoneNum
+            SDemo.sd_studentuid = self.studentuid
+            self.DbRead.commit()
+            self.DbRead.close()
         rep = {}
         rep['data'] = result
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
