@@ -88,6 +88,7 @@ class ValidationCode(BaseHandler):
             SDemo = self.Student_Demo()
             SDemo.sd_phone = self.phoneNum
             SDemo.sd_studentuid = self.studentuid
+            self.DbRead.add(SDemo)
             self.DbRead.commit()
             self.DbRead.close()
         rep = {}
