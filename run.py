@@ -18,6 +18,7 @@ def cli(**kwargs):
     http_server = httpserver.HTTPServer(Application(),xheaders=True)
     http_server.listen(options.port)
     ioloop.IOLoop.instance().start()
+    init_db()
 
     # def column_dict(self):
     #     model_dict = dict(self.__dict__)
