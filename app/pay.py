@@ -129,7 +129,7 @@ class SetOrder(BaseHandler):
         Order = self.Order()
         Order.order_packageuid = packageid
         Order.order_createtime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(timestramp))
-        Order.timestrampstr = timestramp_str
+        Order.order_timestrampstr = timestramp_str
         Order.order_money = order_money
         Order.order_nonceStr = nonceStr
         Order.order_paySign = paysign
@@ -210,12 +210,10 @@ class CloseOrder(BaseHandler):
         data = self.XmlData()
         result = self.Posts(data)
         response = result
-        print result
         xml2obj = {}
         root = ET.fromstring(response)
         for child_list in root.findall("*"):
             xml2obj[child_list.tag] = child_list.text
-        print  xml2obj
         if xml2obj['return_code']=='SUCCESS' and xml2obj['result_code']=='SUCCESS':
             order = self.DbRead.query(self.Order.order_id).filter(self.Order.order_code==self.OrderCode).delete()
             self.DbRead.commit()
