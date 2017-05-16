@@ -92,4 +92,6 @@ class getstudent(BaseHandler):
             result = 1
         else:
             result = 0
+        self.DbRead.commit()
+        self.DbRead.close()
         return result

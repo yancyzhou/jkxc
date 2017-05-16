@@ -263,6 +263,7 @@ class SubSchool(BaseHandler):
                 rep.append({'ep_longitude':res.ep_longitude,'ep_latitude':res.ep_latitude,'value':res.ep_id,'checked':True,'name': res.ep_name, 'description': res.ep_address})
             else:
                 rep.append({'ep_longitude':res.ep_longitude,'ep_latitude':res.ep_latitude,'value':res.ep_id,'checked':False,'name': res.ep_name, 'description': res.ep_address})
+        self.DbRead.commit()
         self.DbRead.close()
         return rep
 
@@ -283,6 +284,7 @@ class RegistratorInfo(BaseHandler):
 
     def getdata(self):
         res = self.Student.query(self.Student).filter(self.Student.student_wxcode==self.OpenId).one()
+
         return res
 
 
@@ -397,4 +399,6 @@ class GetNotDoneOrder(BaseHandler):
             data = {'order_code':res.order_code,'packagename': res.package_name,'packagemoney':res.package_money,'ep_name':res.ep_name, 'order_money':res.order_money,'order_state':res.order_state,'order_type':res.order_type}
         else:
             data = 0
+        self.DbRead.commit()
+        self.DbRead.close()
         return data
