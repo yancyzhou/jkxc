@@ -213,7 +213,7 @@ class CloseOrder(BaseHandler):
         self.key = "jike712YMiinoo736Rexhu1217Nan909"
         data = self.XmlData()
         result = self.Posts(data)
-
+        print result
         response = result
         xml2obj = {}
         root = ET.fromstring(response)
@@ -224,7 +224,7 @@ class CloseOrder(BaseHandler):
         rep['data'] = xml2obj
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
     def Posts(self,data):
-        url = "https://api.mch.weixin.qq.com/pay/unifiedorder"
+        url = "https://api.mch.weixin.qq.com/pay/closeorder"
         headers = {"Content-Type": "text/xml"}
         rep = urllib2.Request(url=url, headers=headers, data=data)
         response = urllib2.urlopen(rep)
