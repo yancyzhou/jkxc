@@ -179,10 +179,11 @@ class Order(Base):
     order_nonceStr = Column(VARCHAR(100))
     order_paySign = Column(VARCHAR(100))
     order_code = Column(VARCHAR(50))
+    order_timestrampstr = Column(VARCHAR(50))
     order_packageuid = Column(BIGINT(11))
     order_createtime = Column(DATETIME(15))
 
-    def __init__(self, order_money=0, order_type=0,nonceStr=None,paySign=None, order_code=None,order_wx_prepay_id = None,order_studentuid=0, order_state=0, order_packageuid=0,
+    def __init__(self, order_money=0, order_type=0,nonceStr=None,timestrampstr = '',paySign=None, order_code=None,order_wx_prepay_id = None,order_studentuid=0, order_state=0, order_packageuid=0,
                  order_createtime=None):
         self.order_money = order_money
         self.order_type = order_type
@@ -193,6 +194,7 @@ class Order(Base):
         self.order_packageuid = order_packageuid
         self.order_createtime = order_createtime
         self.order_paySign = paySign
+        self.order_timestrampstr = timestrampstr
         self.order_nonceStr = nonceStr
 
 

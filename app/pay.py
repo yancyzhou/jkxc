@@ -104,7 +104,7 @@ class SetOrder(BaseHandler):
         signstr = "appId=%s&nonceStr=%s&package=prepay_id=%s&signType=MD5&timeStamp=%s&key=%s" % (self.AppID,xml2obj['nonce_str'],xml2obj['prepay_id'],timestramp_str,self.key)
         secondsign = self.set_md5(signstr)
         if "prepay_id" in xml2obj.keys():
-            saveresult = self.SaveOrder(self.packageid,self.id,xml2obj['prepay_id'],int(self.total_fee)/100,xml2obj['nonce_str'],secondsign)
+            saveresult = self.SaveOrder(self.packageid,self.id,xml2obj['prepay_id'],int(self.total_fee)/100,xml2obj['nonce_str'],secondsign,timestramp)
             if saveresult:
                 student = self.DbRead.query(self.Student).filter(self.Student.student_code == self.phoneNumber).first()
                 student.student_packageuid = self.packageid
@@ -122,13 +122,14 @@ class SetOrder(BaseHandler):
         rep['data'] = {"order_id":saveresult,"paysign":secondsign,"out_trade_no":self.id,"prepayid":xml2obj['prepay_id'],"nonceStr":xml2obj['nonce_str'],"timestramp":timestramp_str}
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
 
-    def SaveOrder(self,packageid,order_code,prepay_id,order_money,nonceStr,paysign):
+    def SaveOrder(self,packageid,order_code,prepay_id,order_money,nonceStr,paysign,timestramp_str):
         timestramp = time.time()
         student = self.DbRead.query(self.Student).filter(self.Student.student_code == self.phoneNumber).first()
 
         Order = self.Order()
         Order.order_packageuid = packageid
         Order.order_createtime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(timestramp))
+        Order.timestrampstr = timestramp_str
         Order.order_money = order_money
         Order.order_nonceStr = nonceStr
         Order.order_paySign = paysign
@@ -186,9 +187,6 @@ class CloseOrder(BaseHandler):
         mch_idvalue = "1467218302"  # mch_id
         nonce_strvalue = self.GetRandomStr
         out_trade_novalue = self.OrderCode
-        total_feevalue = '1'#self.total_fee  # 价格
-        spbill_create_ipvalue = "120.210.166.7"
-        trade_typevalue = "JSAPI"
         key = self.key  # 用户配置
 
         formatstr = 'appid=%s&mch_id=%s&nonce_str=%s&out_trade_no=%s&key=%s' % (appidvalue,mch_idvalue,nonce_strvalue,out_trade_novalue, key)
@@ -206,20 +204,29 @@ class CloseOrder(BaseHandler):
 
     def post(self, *args, **kwargs):
         self.OrderCode = self.get_json_argument('order_code',None)
+        self.usercode = self.get_json_argument('usercode',None)
         self.AppID = "wxad81631247e48b3e"
         self.key = "jike712YMiinoo736Rexhu1217Nan909"
         data = self.XmlData()
         result = self.Posts(data)
-        print result
         response = result
         xml2obj = {}
         root = ET.fromstring(response)
         for child_list in root.findall("*"):
             xml2obj[child_list.tag] = child_list.text
-
+        if xml2obj['return_code']=='SUCCESS' and xml2obj['result_code']=='SUCCESS':
+            self.DbRead.query.filter(self.Order.order_code==self.OrderCode).delete()
+            print self.DbRead.query.get(1)
+            self.DbRead.commit()
+            self.DbRead.close()
+            closeorder_status = 1
+        else:
+            closeorder_status = 0
         rep = {}
-        rep['data'] = xml2obj
+        rep['data'] = closeorder_status
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+
     def Posts(self,data):
         url = "https://api.mch.weixin.qq.com/pay/closeorder"
         headers = {"Content-Type": "text/xml"}
