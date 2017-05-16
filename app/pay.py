@@ -111,6 +111,10 @@ class SetOrder(BaseHandler):
                 student.student_eqid = self.branchschoolid
                 student.student_code = self.phoneNumber
                 student.student_name = self.username
+                if self.total_fee == 50000:
+                    student.student_state = 2
+                else:
+                    student.student_state = 4
                 student.student_id_number = self.id_Number
                 self.DbRead.commit()
                 self.DbRead.close()
