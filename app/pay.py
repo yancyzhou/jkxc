@@ -191,7 +191,7 @@ class CloseOrder(BaseHandler):
         trade_typevalue = "JSAPI"
         key = self.key  # 用户配置
 
-        formatstr = 'appid=%s&mch_id=%s&nonce_str=%s&out_trade_no=%s&spbill_create_ip=%s&total_fee=%s&trade_type=%s&key=%s' % (appidvalue,mch_idvalue,nonce_strvalue,out_trade_novalue, spbill_create_ipvalue, total_feevalue,trade_typevalue, key)
+        formatstr = 'appid=%s&mch_id=%s&nonce_str=%s&out_trade_no=%s&key=%s' % (appidvalue,mch_idvalue,nonce_strvalue,out_trade_novalue, key)
         signvalue = self.set_md5(formatstr)
 
         xmlstart = "<xml>\r\n"
@@ -199,12 +199,9 @@ class CloseOrder(BaseHandler):
         mch_id = "<mch_id>" + mch_idvalue + "</mch_id>\r\n"
         nonce_str = "<nonce_str>" + nonce_strvalue + "</nonce_str>\r\n"
         out_trade_no = "<out_trade_no>" + out_trade_novalue + "</out_trade_no>\r\n"
-        total_fee = "<total_fee>" + str(total_feevalue) + "</total_fee>\r\n"
-        spbill_create_ip = "<spbill_create_ip>" + spbill_create_ipvalue + "</spbill_create_ip>\r\n"
-        trade_type = "<trade_type>" + trade_typevalue + "</trade_type>\r\n"
         sign = "<sign>" + signvalue + "</sign>\r\n"
         xmlend = "</xml>"
-        result = xmlstart + appid + mch_id+nonce_str+out_trade_no+spbill_create_ip+total_fee+trade_type+sign+ xmlend
+        result = xmlstart + appid + mch_id+nonce_str+out_trade_no+sign+ xmlend
         return result.encode('utf-8')
 
     def post(self, *args, **kwargs):
