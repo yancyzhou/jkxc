@@ -217,18 +217,19 @@ class CloseOrder(BaseHandler):
         if xml2obj['return_code']=='SUCCESS' and xml2obj['result_code']=='SUCCESS':
             order = self.DbRead.query(self.Order.order_id).filter(self.Order.order_code==self.OrderCode).delete()
             self.DbRead.commit()
-            if order:
+            if order is not None:
                 student = self.DbRead.query(self.Student).filter(self.Student.student_code==self.usercode).first()
                 student.student_packageuid = 0
                 student.student_eqid = 0
                 self.DbRead.commit()
+                closeorder_status = 1
+            else:
+                closeorder_status = 0
             self.DbRead.close()
-            closeorder_status = 1
         else:
-            order_id = 0
             closeorder_status = 0
         rep = {}
-        rep['data'] = {'code':closeorder_status,"order_id":order_id}
+        rep['data'] = {'code':closeorder_status}
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
 
 
