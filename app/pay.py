@@ -215,15 +215,16 @@ class CloseOrder(BaseHandler):
         for child_list in root.findall("*"):
             xml2obj[child_list.tag] = child_list.text
         if xml2obj['return_code']=='SUCCESS' and xml2obj['result_code']=='SUCCESS':
-            self.DbRead.query().filter(self.Order.order_code==self.OrderCode).delete()
-            print self.DbRead.query().get(1)
+            order = self.DbRead.query(self.Order.order_id).filter(self.Order.order_code==self.OrderCode).delete()
             self.DbRead.commit()
+            order_id = order.order_id
             self.DbRead.close()
             closeorder_status = 1
         else:
+            order_id = 0
             closeorder_status = 0
         rep = {}
-        rep['data'] = closeorder_status
+        rep['data'] = {'code':closeorder_status,"order_id":order_id}
         self.writejson(json_decode(str(ApiHTTPError(**rep))))
 
 
