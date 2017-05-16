@@ -392,11 +392,11 @@ class GetNotDoneOrder(BaseHandler):
 
     @run_on_executor
     def getdata(self):
-        res = self.DbRead.query(self.Package.package_money, self.Order.order_state,self.Order.order_type,self.Exam_place.ep_name,self.Package.package_name, self.Order.order_code,self.Order.order_money)\
+        res = self.DbRead.query(self.Order.order_paySign,self.Order.order_wx_prepay_id,self.Order.order_nonceStr,self.Package.package_money, self.Order.order_state,self.Order.order_type,self.Exam_place.ep_name,self.Package.package_name, self.Order.order_code,self.Order.order_money)\
                     .filter(self.Student.student_code==self.studentcode,self.Student.student_packageuid==self.Package.package_id,self.Exam_place.ep_schooluid==self.Student.student_schooluid,self.Order.order_studentuid==self.Student.student_id).first()
 
         if res is not None:
-            data = {'order_code':res.order_code,'packagename': res.package_name,'packagemoney':res.package_money,'ep_name':res.ep_name, 'order_money':res.order_money,'order_state':res.order_state,'order_type':res.order_type}
+            data = {'order_paySign':res.order_paySign,'order_wx_prepay_id':res.order_wx_prepay_id,'order_nonceStr':res.order_nonceStr,'order_code':res.order_code,'packagename': res.package_name,'packagemoney':res.package_money,'ep_name':res.ep_name, 'order_money':res.order_money,'order_state':res.order_state,'order_type':res.order_type}
         else:
             data = 0
         self.DbRead.commit()
