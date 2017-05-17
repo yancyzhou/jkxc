@@ -95,3 +95,29 @@ class getstudent(BaseHandler):
         self.DbRead.commit()
         self.DbRead.close()
         return result
+
+
+class getstudent_state(BaseHandler):
+
+    executor = ThreadPoolExecutor(8)
+
+    @gen.coroutine
+    def post(self):
+        self.studentcode = self.get_json_argument("studentcode", None)
+        res = yield self.getdata()
+        rep = {}
+        rep['data'] = res
+        self.writejson(json_decode(str(ApiHTTPError(**rep))))
+
+    @run_on_executor
+    def getdata(self):
+
+        res = self.DbRead.query(self.Student.student_code,self.Student.student_state).filter(self.Student.student_code==self.studentcode).first()
+
+        if res is not None:
+            result = 1
+        else:
+            result = 0
+        self.DbRead.commit()
+        self.DbRead.close()
+        return result

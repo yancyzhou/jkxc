@@ -18,6 +18,7 @@ Handlers = [
     (r'/api/validationcode', ValidationCode),
     (r'/api/login', Login),
     (r'/api/getstudent', getstudent),
+    (r'/api/getstudent_state', getstudent_state),
     (r'/api/subschool', SubSchool),
     (r'/api/PayResult', PayResult),
     (r'/api/PaySucess', PaySucess),
