@@ -40,7 +40,7 @@ class SetOrder(BaseHandler):
         nonce_strvalue = self.GetRandomStr
         bodyvalue = self.body.encode('utf-8')
         out_trade_novalue = self.id
-        total_feevalue = '1'#self.total_fee  # 价格
+        total_feevalue = self.total_fee  # 价格
         spbill_create_ipvalue = "120.210.166.7"
         notify_urlvalue = "https://jk.jikexueche.com/api/PayResult"  # 用户回调URL地址
         trade_typevalue = "JSAPI"
