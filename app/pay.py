@@ -128,7 +128,6 @@ class SetOrder(BaseHandler):
 
     def SaveOrder(self,packageid,order_code,prepay_id,order_money,nonceStr,paysign,timestramp_str):
         timestramp = time.time()
-        print self.phoneNumber
         student = self.DbRead.query(self.Student).filter(self.Student.student_code == self.phoneNumber).first()
 
         Order = self.Order()
