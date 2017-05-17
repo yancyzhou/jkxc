@@ -104,7 +104,7 @@ class SetOrder(BaseHandler):
         signstr = "appId=%s&nonceStr=%s&package=prepay_id=%s&signType=MD5&timeStamp=%s&key=%s" % (self.AppID,xml2obj['nonce_str'],xml2obj['prepay_id'],timestramp_str,self.key)
         secondsign = self.set_md5(signstr)
         if "prepay_id" in xml2obj.keys():
-            saveresult = self.SaveOrder(self.packageid,self.id,xml2obj['prepay_id'],int(self.total_fee)/100,xml2obj['nonce_str'],secondsign,timestramp)
+            saveresult = self.SaveOrder(self.packageid,self.id,xml2obj['prepay_id'],int(self.total_fee)/100,xml2obj['nonce_str'],secondsign,timestramp_str)
             if saveresult:
                 student = self.DbRead.query(self.Student).filter(self.Student.student_code == self.phoneNumber).first()
                 student.student_packageuid = self.packageid
