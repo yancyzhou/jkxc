@@ -237,9 +237,12 @@ class Studentoftrainer(BaseHandler):
             self.Courses.courses_traineruid == result.trainer_id, self.Courses.courses_state != 4).first()
         self.DbRead.commit()
         self.DbRead.close()
+        # rep = {"trainer_name": result.trainer_name, "trainer_code": result.trainer_code,"trainer_headpic": result.trainer_headpic,
+        #        "trainer_dic": result.trainer_dic, "trainer_years": result.trainer_years,
+        #        "studentnum": result1.studentnum,"learntime": result2.learntime}
         rep = {"trainer_name": result.trainer_name, "trainer_code": result.trainer_code,"trainer_headpic": result.trainer_headpic,
                "trainer_dic": result.trainer_dic, "trainer_years": result.trainer_years,
-               "studentnum": result1.studentnum,"learntime": result2.learntime}
+               "studentnum": result1.studentnum,"learntime": result1.studentnum*20}
         return rep
 
 # 驾校场地列表
