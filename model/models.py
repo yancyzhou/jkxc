@@ -209,9 +209,10 @@ class Package(Base):
     package_state = Column(BIGINT(9))
     package_schooluid = Column(BIGINT(11))
     package_detail = Column(TEXT)
+    package_abstract = Column(TEXT)
 
     def __init__(self, package_money=0, package_name=None, package_describe=None, package_class_hour=0, package_state=0,
-                 package_schooluid=0,package_detail=None,package_pic=None):
+                 package_schooluid=0,package_detail=None,package_pic=None,package_abstract = None):
         self.package_money = package_money
         self.package_name = package_name
         self.package_describe = package_describe
@@ -220,6 +221,7 @@ class Package(Base):
         self.package_schooluid = package_schooluid
         self.package_detail = package_detail
         self.package_pic = package_pic
+        self.package_abstract = package_abstract
 
 
 class Student_courses(Base):
