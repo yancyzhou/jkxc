@@ -35,10 +35,11 @@ class PackageIndex(BaseHandler):
         self.DbRead.close()
         rep = []
         for index,res in enumerate(result):
+            package_abstract = res.package_abstract.split('@')
             more_item = True
             if index > 1:
                 more_item = False
-            item_dict = {"package_id":res.package_id,"package_name":res.package_name, "package_money":res.package_money,"package_abstract":res.package_abstract.split('@'),"more_item":more_item,"package_pic":res.package_pic}
+            item_dict = {"package_id":res.package_id,"package_name":res.package_name, "package_money":res.package_money,"package_abstract1":package_abstract[:2],"package_abstract2":package_abstract[2:],"more_item":more_item,"package_pic":res.package_pic}
             rep.append(item_dict)
         return rep
 
