@@ -1,0 +1,12 @@
+{
+    "db": {
+        "MySQLREAD": {
+            "Host": "10.66.218.15",
+            "User": "service",
+            "Passwd":   "service!@#",
+            "Dbname":   "jkxc",
+            "Port": 3306,
+            "Charset":  "utf8"
+            }
+        }
+}

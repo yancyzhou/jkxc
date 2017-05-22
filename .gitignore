@@ -1,5 +1,5 @@
 .idea
-dbclient
+dbclient/__init__.py
 admin/__init__.py
 app/__init__.py
 model/__init__.py
