@@ -31,7 +31,7 @@ class PackageIndex(BaseHandler):
         result = self.DbRead.query(
             self.Package.package_id, self.Package.package_name, self.Package.package_money,self.Package.package_pic,self.Package.package_abstract).filter(
             self.Package.package_state == 1,
-            self.Package.package_schooluid == self.schoolid,).all()
+            self.Package.package_schooluid == self.schoolid,).order_by(self.Package.package_money).all()
         self.DbRead.close()
         rep = []
         for index,res in enumerate(result):
