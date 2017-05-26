@@ -12,12 +12,18 @@ class ApiHTTPError(Exception):
         self.status_code = status_code
         self.log_message = log_message
         self.reason = kwargs.get('reason', None)
-        self.data = kwargs.get('data', {'message': Errortypes[self.status_code]})
+        datas = {'message': Errortypes[self.status_code]}
+        self.data = kwargs.get('data', datas)
         if log_message and not args:
             self.log_message = log_message.replace('%', '%%')
 
     def __str__(self):
-        result = json_encode({'code': self.status_code, 'message': Errortypes[self.status_code], 'data': self.data})
+        data = {
+            'code': self.status_code,
+            'message': Errortypes[self.status_code],
+            'data': self.data
+        }
+        result = json_encode(data)
         return result
 
 
@@ -92,7 +98,6 @@ class BaseHandler(RequestHandler):
         name = socket.getfqdn(socket.gethostname())
         addr = socket.gethostbyname(name)
         return addr
-
 
     @property
     def GetRandomStr(self):
