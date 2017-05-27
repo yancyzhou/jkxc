@@ -25,5 +25,6 @@ Handlers = [
     (r'/api/GetNotDoneOrder', GetNotDoneOrder),
     (r'/api/CloseOrder', CloseOrder),
     (r'/api/GetStudentReigstantion', GetStudentReigstantion),
+    (r'/api/getfree/(.*)', getFree),
     (r".*", NotFound),
 ]
