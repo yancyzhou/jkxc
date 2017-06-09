@@ -5,13 +5,13 @@
 ======================
 '''
 from __future__ import division
-from tornado import gen,httpclient
-from Handler import BaseHandler,ApiHTTPError
-from auth import jwtauth
-from tornado.escape import json_decode,json_encode
+from tornado import gen, httpclient
+from Handler import BaseHandler, ApiHTTPError
+from tornado.escape import json_decode
 from concurrent.futures import ThreadPoolExecutor
 from tornado.concurrent import run_on_executor
-import base64,json
+import base64
+import json
 from Crypto.Cipher import AES
 
 
@@ -45,10 +45,11 @@ class GetUserinfo(BaseHandler):
 
     @gen.coroutine
     def post(self, *args, **kwargs):
-        self.code = self.get_json_argument("code",None)
+        self.code = self.get_json_argument("code", None)
         self.appId = 'wxad81631247e48b3e'
         client = httpclient.AsyncHTTPClient()
-        url = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code" %(self.appId,'fd82d4c64dbfead96192e31df1146741',self.code)
+        url = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code" % (
+            self.appId, 'fd82d4c64dbfead96192e31df1146741', self.code)
         response = yield client.fetch(url)
 
         # result = yield self.getdata()
@@ -86,7 +87,8 @@ class getstudent(BaseHandler):
     @run_on_executor
     def getdata(self):
 
-        res = self.DbRead.query(self.Student.student_id).filter(self.Student.student_code==self.studentcode,self.Student.student_packageuid==self.Package.package_id).first()
+        res = self.DbRead.query(self.Student.student_id).filter(self.Student.student_code ==
+                                                                self.studentcode, self.Student.student_packageuid == self.Package.package_id).first()
 
         if res is not None:
             result = 1
@@ -112,12 +114,13 @@ class getstudent_state(BaseHandler):
     @run_on_executor
     def getdata(self):
 
-        res = self.DbRead.query(self.Student.student_code,self.Student.student_state).filter(self.Student.student_code==self.studentcode).first()
+        res = self.DbRead.query(self.Student.student_code, self.Student.student_state).filter(
+            self.Student.student_code == self.studentcode).first()
 
         if res is not None:
-            result = {'student_state':res.student_state}
+            result = {'student_state': res.student_state}
         else:
-            result = {'student_state':-1}
+            result = {'student_state': -1}
         self.DbRead.commit()
         self.DbRead.close()
         return result
